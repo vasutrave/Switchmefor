@@ -5,6 +5,9 @@
 	int yyerror(const char *s);
 	int success = 1;
 	int tcnt = 1;
+	int bal_brack = 0;
+	int temp = 0;
+	int close_brack = 0;
 %}
 
 %token int_const char_const float_const id string type_const DEFINE
@@ -208,16 +211,20 @@ consts						: int_const
 int main()
 {
 
+    printf("\nCode After Stripping off Comments:");
+    printf("\n-------------------------------------------------------------------------------------------------\n");
     yyparse();
+    printf("\n-------------------------------------------------------------------------------------------------\n");
     if(success)
-    	printf("Parsing Successful\n");
+    	printf("\n\t\t\t\t\tParsing Successful!\n\n");
 			int i = 0;
-		printf("Tok_Num\t\t Symbol\t\t\tTypeOfToken\t\tLine Number\n");
-		printf("---------------------------------------------------------------------------\n");
+		printf("\n\t\t\t\t\tSYMBOL TABLE\n\n");
+		printf("Scope_Num\tTok_Num\t\t Symbol\t\t\tTypeOfToken\t\tLine Number\n");
+		printf("----------------------------------------------------------------------------------------------\n");
 		for(i = 0; i < tcnt; i ++)
 		{
 			if(symtab[i].tok_num != 0)
-				printf("%5d\t\t%8s\t\t%8s\t\t%5d\n",symtab[i].tok_num,symtab[i].symbol,symtab[i].type,symtab[i].lineno);
+				printf("%5d\t\t%5d\t\t%8s\t\t%8s\t\t%5d\n",symtab[i].scope_num,symtab[i].tok_num,symtab[i].symbol,symtab[i].type,symtab[i].lineno);
 		}
 		printf("Total number of tokens : %d\n",tcnt);
     return 0;

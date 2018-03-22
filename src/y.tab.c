@@ -70,8 +70,11 @@
 	int yyerror(const char *s);
 	int success = 1;
 	int tcnt = 1;
+	int bal_brack = 0;
+	int temp = 0;
+	int close_brack = 0;
 
-#line 75 "y.tab.c" /* yacc.c:339  */
+#line 78 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -172,7 +175,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 176 "y.tab.c" /* yacc.c:358  */
+#line 179 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -472,20 +475,20 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    18,    18,    19,    20,    22,    23,    25,    26,    28,
-      29,    30,    31,    33,    34,    36,    37,    39,    40,    43,
-      46,    47,    49,    50,    55,    57,    58,    59,    60,    61,
-      62,    63,    66,    67,    69,    70,    72,    73,    74,    76,
-      77,    79,    80,    81,    83,    84,    87,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,   100,   101,   102,   103,
-     104,   105,   107,   108,   109,   111,   112,   114,   115,   116,
-     117,   119,   120,   122,   124,   125,   126,   127,   128,   129,
-     130,   131,   133,   134,   135,   136,   138,   139,   141,   142,
-     144,   146,   148,   150,   151,   153,   154,   156,   157,   159,
-     160,   162,   163,   165,   166,   168,   169,   170,   171,   174,
-     175,   176,   178,   179,   180,   181,   184,   185,   188,   189,
-     190,   191,   192,   194,   195,   196,   197,   199,   200,   202,
-     203,   204
+       0,    21,    21,    22,    23,    25,    26,    28,    29,    31,
+      32,    33,    34,    36,    37,    39,    40,    42,    43,    46,
+      49,    50,    52,    53,    58,    60,    61,    62,    63,    64,
+      65,    66,    69,    70,    72,    73,    75,    76,    77,    79,
+      80,    82,    83,    84,    86,    87,    90,    92,    93,    94,
+      95,    96,    97,    98,    99,   100,   103,   104,   105,   106,
+     107,   108,   110,   111,   112,   114,   115,   117,   118,   119,
+     120,   122,   123,   125,   127,   128,   129,   130,   131,   132,
+     133,   134,   136,   137,   138,   139,   141,   142,   144,   145,
+     147,   149,   151,   153,   154,   156,   157,   159,   160,   162,
+     163,   165,   166,   168,   169,   171,   172,   173,   174,   177,
+     178,   179,   181,   182,   183,   184,   187,   188,   191,   192,
+     193,   194,   195,   197,   198,   199,   200,   202,   203,   205,
+     206,   207
 };
 #endif
 
@@ -1478,13 +1481,13 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 21 "project.y" /* yacc.c:1646  */
+#line 24 "project.y" /* yacc.c:1646  */
     {YYACCEPT;}
-#line 1484 "y.tab.c" /* yacc.c:1646  */
+#line 1487 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1488 "y.tab.c" /* yacc.c:1646  */
+#line 1491 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1712,22 +1715,26 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 206 "project.y" /* yacc.c:1906  */
+#line 209 "project.y" /* yacc.c:1906  */
 
 
 int main()
 {
 
+    printf("\nCode After Stripping off Comments:");
+    printf("\n-------------------------------------------------------------------------------------------------\n");
     yyparse();
+    printf("\n-------------------------------------------------------------------------------------------------\n");
     if(success)
-    	printf("Parsing Successful\n");
+    	printf("\n\t\t\t\t\tParsing Successful!\n\n");
 			int i = 0;
-		printf("Tok_Num\t\t Symbol\t\t\tTypeOfToken\t\tLine Number\n");
-		printf("---------------------------------------------------------------------------\n");
+		printf("\n\t\t\t\t\tSYMBOL TABLE\n\n");
+		printf("Scope_Num\tTok_Num\t\t Symbol\t\t\tTypeOfToken\t\tLine Number\n");
+		printf("----------------------------------------------------------------------------------------------\n");
 		for(i = 0; i < tcnt; i ++)
 		{
 			if(symtab[i].tok_num != 0)
-				printf("%5d\t\t%8s\t\t%8s\t\t%5d\n",symtab[i].tok_num,symtab[i].symbol,symtab[i].type,symtab[i].lineno);
+				printf("%5d\t\t%5d\t\t%8s\t\t%8s\t\t%5d\n",symtab[i].scope_num,symtab[i].tok_num,symtab[i].symbol,symtab[i].type,symtab[i].lineno);
 		}
 		printf("Total number of tokens : %d\n",tcnt);
     return 0;
