@@ -7,3 +7,10 @@ Features to be implemented:
 		*Intermediate Code Generation 
 		*Optimization
 
+To run test:
+Run 
+$ ./build.sh
+
+
+(This parses the input.c file)
+(For now only symbol table done)
