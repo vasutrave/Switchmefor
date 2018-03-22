@@ -9,7 +9,7 @@ Features to be implemented:
 
 To run test:
 Run 
-$ ./build.sh
+                $ ./build.sh
 
 
 (This parses the input.c file)
