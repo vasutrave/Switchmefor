@@ -104,7 +104,11 @@
 														    tcnt++;
 														    ECHO;return inc_const;}
 
-";"|"="|","|"{"|"}"|"("|")"|"["|"]"|":"										{   initEntry(yytext); strcpy(symtab[tcnt].type,"Punctuation");
+"="														{initEntry(yytext);strcpy(symtab[tcnt].type,"AssignmentOp");
+														   
+														    tcnt++;
+														    ECHO;return yytext[0];}										
+";"|","|"{"|"}"|"("|")"|"["|"]"|":"										{   initEntry(yytext); strcpy(symtab[tcnt].type,"Punctuation");
 														    tcnt++;
 														    /*printf("\nyytext = %s/-",yytext);*/
 														    if(strcmp(yytext,"{")==0){
