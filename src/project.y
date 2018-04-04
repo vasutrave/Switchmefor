@@ -10,12 +10,19 @@
 	int close_brack = 0;
 %}
 
-%token int_const char_const float_const id string type_const DEFINE
-%token FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
-%token point_const param_const ELSE HEADER
+%token  int_const char_const float_const id string type_const DEFINE
+%token  FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
+%token  param_const HEADER
 %left '+' '-'
 %left '*' '/'
 %define parse.error verbose
+%union{
+		char *text;
+
+}
+%type <text>  int_const char_const float_const id string type_const DEFINE
+%type <text> FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
+%type <text> param_const HEADER
 %start program_unit
 %%
 program_unit				: HEADER program_unit
@@ -43,7 +50,7 @@ decl_specs					: type_spec decl_specs
 							| type_spec
 							;
 
-type_spec					: type_const
+type_spec					: type_const{printf("****Type: %s****",yylval.text);}
 							;
 
 init_declarator_list		: init_declarator

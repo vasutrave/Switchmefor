@@ -55,6 +55,7 @@
 														    strcpy(symtab[tcnt].type,"Keyword");	
 														    tcnt++;
 														    ECHO;
+															yylval.text = strdup(yytext);
 														    return type_const;}
 
 "case"														   {initEntry(yytext); 
@@ -103,11 +104,10 @@
 														   
 														    tcnt++;
 														    ECHO;return inc_const;}
-
 "="														{initEntry(yytext);strcpy(symtab[tcnt].type,"AssignmentOp");
-														   
 														    tcnt++;
-														    ECHO;return yytext[0];}										
+														    ECHO;return yytext[0];}
+
 ";"|","|"{"|"}"|"("|")"|"["|"]"|":"										{   initEntry(yytext); strcpy(symtab[tcnt].type,"Punctuation");
 														    tcnt++;
 														    /*printf("\nyytext = %s/-",yytext);*/
