@@ -1,0 +1,9 @@
+a	=	10
+b	=	12
+$L1:
+$t2	=	i	<	10
+if( not $t2)	goto $L2
+$t2	=	i	+	1
+i	=	$t2
+		goto $L1
+$L2: 
