@@ -39,10 +39,26 @@
 			symtab[tcnt].scope_num = bal_brack;
 			strcpy(symtab[tcnt].symbol,sym);
 			symtab[tcnt].lineno = yylineno;
+			symtab[tcnt].size = 0;
+			
 			
 			
 		
 		}
+	}
+	int size(char* text)
+	{
+		if(strcmp(text,"int"))
+			return((int)sizeof(int));
+	        if(strcmp(text,"double"))
+			return((int)sizeof(double));
+		if(strcmp(text,"float"))
+			return((int)sizeof(float));
+		if(strcmp(text,"char"))
+			return((int)sizeof(char));
+		if(strcmp(text,"long"))
+			return((int)sizeof(long));
+
 	}
 
 %}
@@ -52,7 +68,9 @@
 "#define"[ ]+[a-zA-z_][a-zA-z_0-9]* 										   {return DEFINE;}
 
 "void"|"char"|"int"|"long"|"float"|"double"|"signed"|"unsigned"							   {initEntry(yytext);
-														    strcpy(symtab[tcnt].type,"Keyword");	
+														    strcpy(symtab[tcnt].type,"Keyword");
+															symtab[tcnt].size = size(yytext);
+															printf("%d",symtab[tcnt].size);	
 														    tcnt++;
 														    ECHO;
 															yylval.text = strdup(yytext);
@@ -61,55 +79,56 @@
 "case"														   {initEntry(yytext); 
 														    strcpy(symtab[tcnt].type,"Keyword");
 														    tcnt++;
+															yylval.text = strdup(yytext);
 														    ECHO;return CASE;}
 "default"													   {initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														    tcnt++;
-														    ECHO;return DEFAULT;}
+														    ECHO;yylval.text = strdup(yytext);return DEFAULT;}
 "switch"													    {initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														    tcnt++;
-														    ECHO;return SWITCH;}
+														    ECHO;yylval.text = strdup(yytext);return SWITCH;}
 "for"														  {initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return FOR;}
 "continue"													{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														  
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return CONTINUE;}
 "break"														{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														 
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return BREAK;}
 "return"													{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return RETURN;}
 "||" 													      { initEntry(yytext);strcpy(symtab[tcnt].type,"LogicalOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return or_const;}
 "&&"														{initEntry(yytext); strcpy(symtab[tcnt].type,"LogicallOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return and_const;}
 "=="|"!="													 {initEntry(yytext); strcpy(symtab[tcnt].type,"RelationalOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return eq_const;}
 "<="|">="													{initEntry(yytext);strcpy(symtab[tcnt].type,"RelationalOp");
 														   
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return rel_const;}
 "++"|"--"													{initEntry(yytext);strcpy(symtab[tcnt].type,"IncrementalOp");
 														   
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return inc_const;}
 "="														{initEntry(yytext);strcpy(symtab[tcnt].type,"AssignmentOp");
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return yytext[0];}
 
 ";"|","|"{"|"}"|"("|")"|"["|"]"|":"										{   initEntry(yytext); strcpy(symtab[tcnt].type,"Punctuation");
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    /*printf("\nyytext = %s/-",yytext);*/
 														    if(strcmp(yytext,"{")==0){
 															//open_brack++;
@@ -131,33 +150,33 @@
 
 "*"|"+"|"-"|"/"|"%"			   					   		   		  {initEntry(yytext); strcpy(symtab[tcnt].type,"ArithmeticOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return yytext[0];}
 "&"|"|"|"!"												         {initEntry(yytext);strcpy(symtab[tcnt].type,"LogicalOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return yytext[0];}
 "<"|">"														{initEntry(yytext);strcpy(symtab[tcnt].type,"RelationalOp");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return yytext[0];}
 [0-9]+														{initEntry(yytext);strcpy(symtab[tcnt].type,"Integer");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return int_const;}
 [0-9]+"."[0-9]+													{initEntry(yytext);strcpy(symtab[tcnt].type,"Float");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return float_const;}
 "'"."'"														 {initEntry(yytext);strcpy(symtab[tcnt].type,"Character");
 														    
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return char_const;}
 [a-zA-Z_][a-zA-Z_0-9]*			 									{initEntry(yytext);strcpy(symtab[tcnt].type,"Identifier");
 														  /* printf("ID = %s\n",yytext);*/
-														    tcnt++;
+														    tcnt++;yylval.text = strdup(yytext);
 														    ECHO;return id;}
-\"(\\.|[^\"])*\"												   {ECHO;return string;}
+\"(\\.|[^\"])*\"												   {ECHO;yylval.text = strdup(yytext);return string;}
 "//"(\\.|[^\n])*[\n]												   ;
 [/][*]([^*]|[*]*[^*/])*[*]+[/]                                                                                     ;
 [ \t\n]														   {ECHO;}
