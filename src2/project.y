@@ -13,6 +13,7 @@
 	void initEntry(char* sym);
 	int ifPresent(char* sym);
 	char prev[2]={'{','\0'};
+	void insert(int type,char* text);
 
 %}
 
@@ -24,7 +25,8 @@
 %token<txt> char_const  id string type_const DEFINE int_const float_const
 %token<txt> FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
 %token<txt> point_const param_const ELSE HEADER
-%type <txt> consts primary_exp exp assignment_exp conditional_exp unary_exp assignment_operator logical_and_exp logical_or_exp postfix_exp inclusive_or_exp exclusive_or_exp and_exp equality_exp relational_exp additive_exp mult_exp '='
+%type <txt> consts primary_exp exp assignment_exp conditional_exp unary_exp assignment_operator logical_and_exp logical_or_exp postfix_exp inclusive_or_exp exclusive_or_exp and_exp equality_exp relational_exp additive_exp mult_exp '=' 
+%type<txt> type_spec decl_specs decl_list decl direct_declarator declarator init_declarator init_declarator_list 
 
 %left '+' '-'
 %left '*' '/'
@@ -46,32 +48,34 @@ function_definition			: decl_specs declarator decl_list compound_stat
 							| decl_specs declarator	compound_stat
 							| declarator compound_stat
 							;
-decl						: decl_specs init_declarator_list ';'
+decl						: decl_specs init_declarator_list ';'{printf("CHECK THIS OUT: %s~~%s",$1,$2);}
 							| decl_specs ';'
 							;
-decl_list					: decl
-							| decl_list decl
+decl_list					: decl {$$ = $1;}
+							| decl_list decl{$$ = $1;}
 							;
-decl_specs					: type_spec decl_specs
-							| type_spec
-							;
-
-type_spec					: type_const
+decl_specs					: type_spec decl_specs{$$ = $1;}
+							| type_spec{$$ = $1;}
 							;
 
-init_declarator_list		: init_declarator
-							| init_declarator_list ',' init_declarator
+type_spec					: type_const{ insert(1,$1);
+										  $$ = $1;}
 							;
-init_declarator				: declarator
-							| declarator '=' initializer
+
+init_declarator_list		: init_declarator{$$ = $1;}
+							| init_declarator_list ',' init_declarator{$$ = $1;}
+
+							;
+init_declarator				: declarator {$$ = $1;}
+							| declarator '=' initializer {$$ = $1;}
 							;
 
 
 
-declarator					: direct_declarator
+declarator					: direct_declarator{$$ = $1;}
 							;
-direct_declarator			: id
-							| '(' declarator ')'
+direct_declarator			: id {$$ = $1;}
+							| '(' declarator ')' {$$ = $2;}
 							| direct_declarator '[' const_exp ']'
 							| direct_declarator '['	']'
 							| direct_declarator '(' param_type_list ')'
@@ -121,8 +125,8 @@ stat						: labeled_stat
 							| jump_stat
 							;
 labeled_stat				: id ':' stat
-							| CASE const_exp ':' stat
-							| DEFAULT ':' stat
+							| CASE const_exp ':' stat{insert(1,$1);}
+							| DEFAULT ':' stat{insert(1,$1);}
 							;
 exp_stat					: exp ';'
 							| ';'
@@ -135,21 +139,21 @@ compound_stat				: '{' decl_list stat_list '}'
 stat_list					: stat
 							| stat_list stat
 							;
-selection_stat				: SWITCH '(' exp ')' stat
+selection_stat				: SWITCH '(' exp ')' stat {insert(1,$1);}
 							;
-iteration_stat				: FOR '(' exp ';' exp ';' exp ')' stat
-							| FOR '(' exp ';' exp ';'	')' stat
-							| FOR '(' exp ';' ';' exp ')' stat
-							| FOR '(' exp ';' ';' ')' stat
-							| FOR '(' ';' exp ';' exp ')' stat
-							| FOR '(' ';' exp ';' ')' stat
-							| FOR '(' ';' ';' exp ')' stat
-							| FOR '(' ';' ';' ')' stat
+iteration_stat				: FOR '(' exp ';' exp ';' exp ')' stat{insert(1,$1);}
+							| FOR '(' exp ';' exp ';'	')' stat{insert(1,$1);}
+							| FOR '(' exp ';' ';' exp ')' stat{insert(1,$1);}
+							| FOR '(' exp ';' ';' ')' stat{insert(1,$1);}
+							| FOR '(' ';' exp ';' exp ')' stat{insert(1,$1);}
+							| FOR '(' ';' exp ';' ')' stat{insert(1,$1);}
+							| FOR '(' ';' ';' exp ')' stat{insert(1,$1);}
+							| FOR '(' ';' ';' ')' stat{insert(1,$1);}
 							;
-jump_stat					: CONTINUE ';'
-							| BREAK ';'
-							| RETURN exp ';'
-							| RETURN ';'
+jump_stat					: CONTINUE ';'{insert(1,$1);}
+							| BREAK ';'{insert(1,$1);}
+							| RETURN exp ';'{insert(1,$1);}
+							| RETURN ';'{insert(1,$1);}
 							;
 exp							: assignment_exp
 							| exp ',' assignment_exp
@@ -257,6 +261,23 @@ consts						: int_const{$$ = $1;}
 		
 		}
 	}
+
+	void insert(int type,char* text)
+	{
+		switch(type){
+			case 1:
+					initEntry(text);
+					strcpy(symtab[tcnt].type,"Keyword");
+					tcnt++;
+				    break;
+
+
+
+
+		}
+										
+	}
+
 int main()
 {
 
