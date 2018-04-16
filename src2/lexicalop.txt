@@ -1,0 +1,43 @@
+
+Code After Stripping off Comments:
+-------------------------------------------------------------------------------------------------
+
+
+
+int main()
+{
+		
+	int a;
+	a = 100;
+	switch(a){
+		case 1:
+			printf("Hello"); 
+			break;
+		case 2:
+			printf("Bye");
+			break;
+	
+	}
+
+		printf("Hello\n");
+	for(i = 0; i < 10 ; i ++){
+		for(j = 0; j < 11; j ++){
+			a[i] = 0;
+		}
+	}
+
+	c = 0;
+}
+
+int b;
+
+-------------------------------------------------------------------------------------------------
+
+					Parsing Successful!
+
+
+					SYMBOL TABLE
+
+Scope_Num	Tok_Num		 Symbol			TypeOfToken		Line Number
+----------------------------------------------------------------------------------------------
+Total number of tokens : 1
