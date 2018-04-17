@@ -7,8 +7,10 @@ typedef struct entry{
 	int scope_num;
 	char symbol[32];
 	char type[32];
+	char value[32];
+	int dec;
+	int size;
 	int lineno;
-	size_t size;
 } entry;
 	entry symtab[256];
 

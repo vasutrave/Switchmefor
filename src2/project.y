@@ -1,7 +1,6 @@
 %{
 	#include<stdio.h>
 	#include "symtab.h"
-	#include <string.h> 
 	int yylex(void);
 	int yyerror(const char *s);
 	int success = 1;
@@ -9,28 +8,21 @@
 	int bal_brack = 0;
 	int temp = 0;
 	int close_brack = 0;
-	extern int yylineno;
-	void initEntry(char* sym);
-	int ifPresent(char* sym);
-	char prev[2]={'{','\0'};
-	void insert(int type,char* text);
-
 %}
 
-%union{
-	char* txt;
-
-}
-
-%token<txt> char_const  id string type_const DEFINE int_const float_const
-%token<txt> FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
-%token<txt> point_const param_const ELSE HEADER
-%type <txt> consts primary_exp exp assignment_exp conditional_exp unary_exp assignment_operator logical_and_exp logical_or_exp postfix_exp inclusive_or_exp exclusive_or_exp and_exp equality_exp relational_exp additive_exp mult_exp '=' 
-%type<txt> type_spec decl_specs decl_list decl direct_declarator declarator init_declarator init_declarator_list 
-
+%token  int_const char_const float_const id string type_const DEFINE
+%token  FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
+%token  param_const HEADER
 %left '+' '-'
 %left '*' '/'
 %define parse.error verbose
+%union{
+		char *text;
+
+}
+%type <text>  int_const char_const float_const id string type_const DEFINE
+%type <text> FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
+%type <text> param_const HEADER
 %start program_unit
 %%
 program_unit				: HEADER program_unit
@@ -48,34 +40,32 @@ function_definition			: decl_specs declarator decl_list compound_stat
 							| decl_specs declarator	compound_stat
 							| declarator compound_stat
 							;
-decl						: decl_specs init_declarator_list ';'{printf("CHECK THIS OUT: %s~~%s",$1,$2);}
+decl						: decl_specs init_declarator_list ';'
 							| decl_specs ';'
 							;
-decl_list					: decl {$$ = $1;}
-							| decl_list decl{$$ = $1;}
+decl_list					: decl
+							| decl_list decl
 							;
-decl_specs					: type_spec decl_specs{$$ = $1;}
-							| type_spec{$$ = $1;}
-							;
-
-type_spec					: type_const{ insert(1,$1);
-										  $$ = $1;}
+decl_specs					: type_spec decl_specs
+							| type_spec
 							;
 
-init_declarator_list		: init_declarator{$$ = $1;}
-							| init_declarator_list ',' init_declarator{$$ = $1;}
-
+type_spec					: type_const
 							;
-init_declarator				: declarator {$$ = $1;}
-							| declarator '=' initializer {$$ = $1;}
+
+init_declarator_list		: init_declarator
+							| init_declarator_list ',' init_declarator
+							;
+init_declarator				: declarator
+							| declarator '=' initializer
 							;
 
 
 
-declarator					: direct_declarator{$$ = $1;}
+declarator					: direct_declarator
 							;
-direct_declarator			: id {$$ = $1;}
-							| '(' declarator ')' {$$ = $2;}
+direct_declarator			: id
+							| '(' declarator ')'
 							| direct_declarator '[' const_exp ']'
 							| direct_declarator '['	']'
 							| direct_declarator '(' param_type_list ')'
@@ -125,8 +115,8 @@ stat						: labeled_stat
 							| jump_stat
 							;
 labeled_stat				: id ':' stat
-							| CASE const_exp ':' stat{insert(1,$1);}
-							| DEFAULT ':' stat{insert(1,$1);}
+							| CASE const_exp ':' stat
+							| DEFAULT ':' stat
 							;
 exp_stat					: exp ';'
 							| ';'
@@ -139,21 +129,21 @@ compound_stat				: '{' decl_list stat_list '}'
 stat_list					: stat
 							| stat_list stat
 							;
-selection_stat				: SWITCH '(' exp ')' stat {insert(1,$1);}
+selection_stat				: SWITCH '(' exp ')' stat
 							;
-iteration_stat				: FOR '(' exp ';' exp ';' exp ')' stat{insert(1,$1);}
-							| FOR '(' exp ';' exp ';'	')' stat{insert(1,$1);}
-							| FOR '(' exp ';' ';' exp ')' stat{insert(1,$1);}
-							| FOR '(' exp ';' ';' ')' stat{insert(1,$1);}
-							| FOR '(' ';' exp ';' exp ')' stat{insert(1,$1);}
-							| FOR '(' ';' exp ';' ')' stat{insert(1,$1);}
-							| FOR '(' ';' ';' exp ')' stat{insert(1,$1);}
-							| FOR '(' ';' ';' ')' stat{insert(1,$1);}
+iteration_stat				: FOR '(' exp ';' exp ';' exp ')' stat
+							| FOR '(' exp ';' exp ';'	')' stat
+							| FOR '(' exp ';' ';' exp ')' stat
+							| FOR '(' exp ';' ';' ')' stat
+							| FOR '(' ';' exp ';' exp ')' stat
+							| FOR '(' ';' exp ';' ')' stat
+							| FOR '(' ';' ';' exp ')' stat
+							| FOR '(' ';' ';' ')' stat
 							;
-jump_stat					: CONTINUE ';'{insert(1,$1);}
-							| BREAK ';'{insert(1,$1);}
-							| RETURN exp ';'{insert(1,$1);}
-							| RETURN ';'{insert(1,$1);}
+jump_stat					: CONTINUE ';'
+							| BREAK ';'
+							| RETURN exp ';'
+							| RETURN ';'
 							;
 exp							: assignment_exp
 							| exp ',' assignment_exp
@@ -211,72 +201,19 @@ postfix_exp					: primary_exp
 							| postfix_exp '(' ')'
 							| postfix_exp inc_const
 							;
-primary_exp					: id {$$ = $1;}
-							| consts {$$ = $1;}
-							| string {$$ = $1;}
-							| '(' exp ')'{$$ = $2;}
+primary_exp					: id
+							| consts
+							| string
+							| '(' exp ')'
 							;
 argument_exp_list			: assignment_exp
 							| argument_exp_list ',' assignment_exp
 							;
-consts						: int_const{$$ = $1;}
-							| char_const{$$ = $1;}
-							| float_const{$$ = $1;}
+consts						: int_const
+							| char_const
+							| float_const
 							;
 %%
-
-
-	int ifPresent(char* sym){
-  		int i;
-		//printf("sym = %s\n",sym);
-  		for(i = 1; i < tcnt ; i ++)
-   		{
-			if(!strcmp(symtab[i].type,"Identifier"))
-      				{
-					if(!strcmp(sym,symtab[i].symbol) && symtab[i].scope_num == bal_brack)
-        				return 1;
-				}
-			else{
-				      				
-					if(!strcmp(sym,symtab[i].symbol))
-        				return 1;
-				}
-				
-    		}
-		return 0;
-	}
-	
-	void initEntry(char* sym)
-	{
-
-		if(!ifPresent(sym)){
-			symtab[tcnt].tok_num = tcnt;
-			symtab[tcnt].scope_num = bal_brack;
-			strcpy(symtab[tcnt].symbol,sym);
-			symtab[tcnt].lineno = yylineno;
-			symtab[tcnt].size = 0;
-			
-			
-			
-		
-		}
-	}
-
-	void insert(int type,char* text)
-	{
-		switch(type){
-			case 1:
-					initEntry(text);
-					strcpy(symtab[tcnt].type,"Keyword");
-					tcnt++;
-				    break;
-
-
-
-
-		}
-										
-	}
 
 int main()
 {
