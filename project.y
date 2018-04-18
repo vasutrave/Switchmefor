@@ -13,12 +13,30 @@
 	extern int yylineno;
 	void initEntry(char* sym);
 	int ifPresent(char* sym);
-
+	char st[1000][10];
 	void insert(int type,char* text,char* toktype);
 	char buf[100];
+	int top=0;
 	int flag = 0;
 	int arr=1;
 	int size(char* text);
+	char tempo[2]="t";
+
+	int label[200];
+	int lnum=0;
+	int ltop=0;
+	int switch_stack[1000];
+	int stop=0;
+	char type[10];
+
+	void push(char* text);
+	void codegen_logical();
+	void codegen_algebric();
+	void intermediateCode();
+	void codegen_assign();
+	FILE* f1;
+	int i =0;
+
 
 %}
 
@@ -29,9 +47,11 @@
 
 %token<txt> char_const  id string type_const DEFINE int_const float_const
 %token<txt> FOR BREAK SWITCH CONTINUE RETURN CASE DEFAULT or_const and_const eq_const rel_const inc_const
-%token<txt> point_const param_const ELSE HEADER
-%type <txt> consts primary_exp exp assignment_exp conditional_exp unary_exp assignment_operator logical_and_exp logical_or_exp postfix_exp inclusive_or_exp exclusive_or_exp and_exp equality_exp relational_exp additive_exp mult_exp '=' 
+%token<txt> point_const param_const ELSE HEADER 
+%type <txt> consts primary_exp exp assignment_exp conditional_exp unary_exp  logical_and_exp 
+%type <txt> logical_or_exp postfix_exp inclusive_or_exp exclusive_or_exp and_exp equality_exp relational_exp additive_exp  
 %type<txt> type_spec decl_specs decl_list decl direct_declarator declarator init_declarator const_exp  init_declarator_list 
+%type<txt> '>' '<' '|' '&' '^' '+' '-' '*' '/' '%' '=' mult_exp
 
 %left '+' '-'
 %left '*' '/'
@@ -164,46 +184,45 @@ exp							: assignment_exp
 							| exp ',' assignment_exp
 							;
 assignment_exp				: conditional_exp
-							| unary_exp assignment_operator assignment_exp
+							| unary_exp{push($1);} '='{push("=");} conditional_exp{codegen_assign();}
 							;
-assignment_operator			:  '='
-							;
+
 conditional_exp				: logical_or_exp
 							;
 const_exp					: conditional_exp
 							;
 logical_or_exp				: logical_and_exp
-							| logical_or_exp or_const logical_and_exp
+							| logical_or_exp or_const{push($2);} logical_and_exp{codegen_logical();}
 							;
 logical_and_exp				: inclusive_or_exp
-							| logical_and_exp and_const inclusive_or_exp
+							| logical_and_exp and_const{push($2);} inclusive_or_exp{codegen_logical();}
 							;
 inclusive_or_exp			: exclusive_or_exp
-							| inclusive_or_exp '|' exclusive_or_exp
+							| inclusive_or_exp '|'{push($2);} exclusive_or_exp{codegen_logical();}
 							;
 exclusive_or_exp			: and_exp
-							| exclusive_or_exp '^' and_exp
+							| exclusive_or_exp '^'{push($2);} and_exp{codegen_logical();}
 							;
 and_exp						: equality_exp
-							| and_exp '&' equality_exp
+							| and_exp '&' {push($2);}equality_exp{codegen_logical();}
 							;
 equality_exp				: relational_exp
-							| equality_exp eq_const relational_exp
+							| equality_exp eq_const{push($2);} relational_exp{codegen_logical();}
 							;
 relational_exp				: additive_exp
-							| relational_exp '<' additive_exp
-							| relational_exp '>' additive_exp
-							| relational_exp rel_const additive_exp
+							| relational_exp '<'{push($2);} additive_exp{codegen_logical();}
+							| relational_exp '>'{push($2);} additive_exp{codegen_logical();}
+							| relational_exp rel_const{push($2);} additive_exp{codegen_logical();}
 							;
 
 additive_exp				: mult_exp
-							| additive_exp '+' mult_exp
-							| additive_exp '-' mult_exp
+							| additive_exp '+'{push($2);}  mult_exp{codegen_algebric();}
+							| additive_exp '-'{push($2);}  mult_exp{codegen_algebric();}
 							;
 mult_exp					: unary_exp
-							| mult_exp '*' unary_exp
-							| mult_exp '/' unary_exp
-							| mult_exp '%' unary_exp
+							| mult_exp '*'{push($2);}  unary_exp{codegen_algebric();}
+							| mult_exp '/'{push($2);}  unary_exp{codegen_algebric();}
+							| mult_exp '%' {push($2);} unary_exp{codegen_algebric();}
 							;
 
 unary_exp					: postfix_exp
@@ -216,8 +235,8 @@ postfix_exp					: primary_exp
 							| postfix_exp '(' ')'
 							| postfix_exp inc_const
 							;
-primary_exp					: id {$$ = $1;insert(1,$1,"Id");}
-							| consts {$$ = $1;}
+primary_exp					: id {$$ = $1;insert(1,$1,"Id");push($1);}
+							| consts {$$ = $1;push($1);}
 							| string {$$ = $1;}
 							| '(' exp ')'{$$ = $2;}
 							;
@@ -346,13 +365,103 @@ consts						: int_const{$$ = $1;}
 			return 0;
 
 	}
+void push(char* text)
+{
+	printf(">PUSHING: %s<",text);
+  	strcpy(st[++top],text);
+}
+
+void codegen_logical()
+{
+ 	sprintf(tempo,"$t%d",i);
+  	fprintf(f1,"%s\t=\t%s\t%s\t%s\n",tempo,st[top-2],st[top-1],st[top]);
+  	top-=2;
+ 	strcpy(st[top],tempo);
+ 	i++;
+}
+void codegen_algebric()
+{
+ 	sprintf(tempo,"$t%d",i); // converts temp to reqd format
+  	fprintf(f1,"%s\t=\t%s\t%s\t%s\n",tempo,st[top-2],st[top-1],st[top]);
+  	top-=2;
+ 	strcpy(st[top],tempo);
+ 	i++;
+}
+void codegen_assign()
+{
+ 	fprintf(f1,"%s\t=\t%s\n",st[top-2],st[top]);
+ 	top-=3;
+}
+void intermediateCode()
+{
+	int Labels[100000];
+	char buf[100];
+	f1=fopen("output","r");
+	int flag=0,lineno=1;
+	memset(Labels,0,sizeof(Labels));
+	while(fgets(buf,sizeof(buf),f1)!=NULL)
+	{
+		//printf(" %s",buf);
+		if(buf[0]=='$'&&buf[1]=='$'&&buf[2]=='L')
+		{
+			int k=atoi(&buf[3]);
+			//printf("hi %d\n",k);
+			Labels[k]=lineno;
+		}
+		else
+		{
+			lineno++;
+		}
+	}
+	fclose(f1);
+	f1=fopen("output","r");
+	lineno=0;
+
+	printf("\n\n\n*********************InterMediate Code***************************\n\n");
+	while(fgets(buf,sizeof(buf),f1)!=NULL)
+	{
+		//printf("%s",buf);
+		if(buf[0]=='$'&&buf[1]=='$'&&buf[2]=='L')
+		{
+			;
+		}
+		else
+		{
+			flag=0;
+			lineno++;
+			printf("%3d:\t",lineno);
+			int len=strlen(buf),i,flag1=0;
+			for(i=len-3;i>=0;i--)
+			{
+				if(buf[i]=='$'&&buf[i+1]=='$'&&buf[i+2]=='L')
+				{
+					flag1=1;
+					break;
+				}
+			}
+			if(flag1)
+			{
+				buf[i]=='\0';
+				int k=atoi(&buf[i+3]),j;
+				//printf("%s",buf);
+				for(j=0;j<i;j++)
+					printf("%c",buf[j]);
+				printf(" %d\n",Labels[k]);
+			}
+			else printf("%s",buf);
+		}
+	}
+	printf("%3d:\tend\n",++lineno);
+	fclose(f1);
+}
 
 int main()
 {
-
+	f1=fopen("output","w");
     printf("\nCode After Stripping off Comments:");
     printf("\n-------------------------------------------------------------------------------------------------\n");
     yyparse();
+    fclose(f1);
     printf("\n-------------------------------------------------------------------------------------------------\n");
     if(success)
     	printf("\n\t\t\t\t\tParsing Successful!\n\n");
@@ -368,7 +477,7 @@ int main()
 		printf("Total number of tokens : %d\n",tcnt);
 		int present_flag=0;
 		int redeclare_flag=0;
-		for(i = 0; i < tcnt; i ++)
+		for(int i = 0; i < tcnt; i ++)
 		{
 			if(symtab[i].tok_num != 0)
 			{
@@ -398,7 +507,7 @@ int main()
 				}
 			}
 		}
-		for(i = 0; i < tcnt; i ++)
+		for(int i = 0; i < tcnt; i ++)
 		{
 			if(symtab[i].tok_num != 0)
 			{
@@ -421,6 +530,8 @@ int main()
 				}
 			}			
 		}
+
+	intermediateCode();
     return 0;
 }
 
