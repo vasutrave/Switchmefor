@@ -45,13 +45,13 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    int_const = 258,
-    char_const = 259,
-    float_const = 260,
-    id = 261,
-    string = 262,
-    type_const = 263,
-    DEFINE = 264,
+    char_const = 258,
+    id = 259,
+    string = 260,
+    type_const = 261,
+    DEFINE = 262,
+    int_const = 263,
+    float_const = 264,
     FOR = 265,
     BREAK = 266,
     SWITCH = 267,
@@ -64,18 +64,20 @@ extern int yydebug;
     eq_const = 274,
     rel_const = 275,
     inc_const = 276,
-    param_const = 277,
-    HEADER = 278
+    point_const = 277,
+    param_const = 278,
+    ELSE = 279,
+    HEADER = 280
   };
 #endif
 /* Tokens.  */
-#define int_const 258
-#define char_const 259
-#define float_const 260
-#define id 261
-#define string 262
-#define type_const 263
-#define DEFINE 264
+#define char_const 258
+#define id 259
+#define string 260
+#define type_const 261
+#define DEFINE 262
+#define int_const 263
+#define float_const 264
 #define FOR 265
 #define BREAK 266
 #define SWITCH 267
@@ -88,20 +90,22 @@ extern int yydebug;
 #define eq_const 274
 #define rel_const 275
 #define inc_const 276
-#define param_const 277
-#define HEADER 278
+#define point_const 277
+#define param_const 278
+#define ELSE 279
+#define HEADER 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 19 "project.y" /* yacc.c:1909  */
+#line 50 "project.y" /* yacc.c:1909  */
 
-		char *text;
+	char* txt;
 
 
-#line 105 "y.tab.h" /* yacc.c:1909  */
+#line 109 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

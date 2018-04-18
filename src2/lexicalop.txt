@@ -3,34 +3,45 @@ Code After Stripping off Comments:
 -------------------------------------------------------------------------------------------------
 
 
+int main
+yytext = (/-(
+yytext = )/-)
 
-4int****Type: int**** main()
-{
-		
-	4float****Type: float**** b;
-	1char****Type: char**** f;
-	8double****Type: double**** d;
-	switch(a){
-		case 1:
-			printf("Hello"); 
-			break;
-		case 2:
-			printf("Bye");
-			break;
+yytext = {/-{
+	int a
+yytext = ,/-,b
+yytext = ,/-,c
+yytext = ;/-;CHECK THIS OUT: int~~a###main~a~b~c~
+IN ACSE 2
+text = main~a~b~c~
+NEw var_name = m4a
+NEw var_name = maa
+NEw var_name = mai
+NEw var_name = main
+RECOG MAIN
+NEw var_name = aain
+NEw var_name = b
+NEw var_name = c
+
+	for
+yytext = (/-(
+yytext = ;/-;i>PUSHING: i<>>PUSHING: ><10>PUSHING: 10<
+yytext = ;/-;
+yytext = )/-)
 	
-	}
+yytext = {/-{
+		a =>PUSHING: a<>PUSHING: a<>PUSHING: =< a>PUSHING: a< +>PUSHING: +< b>PUSHING: b<
+yytext = ;/-;
+		c =>PUSHING: c<>PUSHING: c<>PUSHING: =< a>PUSHING: a< *>PUSHING: *< b>PUSHING: b<
+yytext = ;/-;
+		c =>PUSHING: c<>PUSHING: c<>PUSHING: =< c>PUSHING: c< +>PUSHING: +< 1>PUSHING: 1<
+yytext = ;/-;
+	
+yytext = }/-}
+	a =>PUSHING: a<>PUSHING: a<>PUSHING: =< 10>PUSHING: 10<
+yytext = ;/-;
 
-		printf("Hello\n");
-	for(i = 0; i < 10 ; i ++){
-		for(j = 0; j < 11; j ++){
-			a[i] = 0;
-		}
-	}
-
-	c = 0;
-}
-
-4int****Type: int**** b;
+yytext = }/-}
 
 -------------------------------------------------------------------------------------------------
 
@@ -39,43 +50,34 @@ Code After Stripping off Comments:
 
 					SYMBOL TABLE
 
-Scope_Num	Tok_Num		 Symbol			TypeOfToken		Line Number
+Scope_Num	Tok_Num		 Symbol			TypeOfToken		Line Number	Size
 ----------------------------------------------------------------------------------------------
-    0		    1		     int		 Keyword		    4
-    0		    2		    main		Identifier		    4
-    0		    3		       (		Punctuation		    4
-    0		    4		       )		Punctuation		    4
-    0		    5		       {		Punctuation		    5
-    1		    6		   float		 Keyword		    8
-    1		    7		       b		Identifier		    8
-    1		    8		       ;		Punctuation		    8
-    1		    9		    char		 Keyword		    9
-    1		   10		       f		Identifier		    9
-    1		   12		  double		 Keyword		   10
-    1		   13		       d		Identifier		   10
-    1		   15		  switch		 Keyword		   11
-    1		   17		       a		Identifier		   11
-    2		   20		    case		 Keyword		   12
-    2		   21		       1		 Integer		   12
-    2		   22		       :		Punctuation		   12
-    2		   23		  printf		Identifier		   13
-    2		   27		   break		 Keyword		   15
-    2		   30		       2		 Integer		   16
-    2		   38		       }		Punctuation		   20
-    1		   39		  printf		Identifier		   22
-    1		   43		     for		 Keyword		   23
-    1		   45		       i		Identifier		   23
-    1		   46		       =		AssignmentOp		   23
-    1		   47		       0		 Integer		   23
-    1		   50		       <		RelationalOp		   23
-    1		   51		      10		 Integer		   23
-    1		   54		      ++		IncrementalOp		   23
-    2		   59		       j		Identifier		   24
-    2		   65		      11		 Integer		   24
-    3		   71		       a		Identifier		   25
-    3		   72		       [		Punctuation		   25
-    3		   73		       i		Identifier		   25
-    3		   74		       ]		Punctuation		   25
-    1		   80		       c		Identifier		   29
-    0		   86		       b		Identifier		   32
-Total number of tokens : 88
+    0		    1		     int		 Keyword		    3		    0
+    1		    3		    main		int-func		    5		    0
+    1		    4		       a		     int		    5		    4
+    1		    5		       b		     int		    5		    4
+    1		    6		       c		     int		    5		    4
+    1		    7		       i		      Id		    6		    0
+    2		    8		       a		      Id		    8		    0
+    2		   10		       b		      Id		    8		    0
+    2		   11		       c		      Id		    9		    0
+    1		   16		     for		 Keyword		   11		    0
+Total number of tokens : 18
+Undefined variable at 6
+
+
+
+*********************InterMediate Code***************************
+
+  1:	$t0	=	i	>	10
+  2:	if( not $t0)	goto $L1
+  3:	$t1	=	a	+	b
+  4:	a	=	$t1
+  5:	$t2	=	a	*	b
+  6:	c	=	$t2
+  7:	$t3	=	c	+	1
+  8:	c	=	$t3
+  9:			goto $L0
+ 10:	$L1: 
+ 11:	a	=	10
+ 12:	end

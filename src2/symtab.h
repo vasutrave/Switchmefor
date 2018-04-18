@@ -5,12 +5,10 @@
 typedef struct entry{
 	int tok_num;
 	int scope_num;
-	char symbol[32];
+	char symbol[40];
 	char type[32];
-	char value[32];
-	int dec;
-	int size;
 	int lineno;
+	int size;
 } entry;
 	entry symtab[256];
 

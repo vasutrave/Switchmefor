@@ -616,70 +616,17 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "project.l"
-#line 4 "project.l"
-	#include<stdio.h>
-	#include<string.h>
-	#include"y.tab.h"
+#line 3 "project.l"
+	#include <stdio.h>
+	#include <string.h>
+	#include "y.tab.h"
 	#include<math.h>
-	#include"symtab.h" 
-	extern int tcnt;
-	extern int bal_brack;
-	//extern int open_brack;
-	extern int temp;
+	#include"symtab.h"
+	int bal_brack = 0;
 	char prev[2]={'{','\0'};
-	int ifPresent(char* sym){
-  		int i;
-		//printf("sym = %s\n",sym);
-  		for(i = 1; i < tcnt ; i ++)
-   		{
-			if(!strcmp(symtab[i].type,"Identifier"))
-      				{
-					if(!strcmp(sym,symtab[i].symbol) && symtab[i].scope_num == bal_brack)
-        				return 1;
-				}
-			else{
-				      				
-					if(!strcmp(sym,symtab[i].symbol))
-        				return 1;
-				}
-				
-    		}
-		return 0;
-	}
-	
-	void initEntry(char* sym)
-	{
+		int temp = 0;	
 
-		if(!ifPresent(sym)){
-			symtab[tcnt].tok_num = tcnt;
-			symtab[tcnt].scope_num = bal_brack;
-			strcpy(symtab[tcnt].symbol,sym);
-			symtab[tcnt].lineno = yylineno;
-			symtab[tcnt].size = 0;
-			
-			
-			
-		
-		}
-	}
-	int size(char* text)
-	{
-		if(!strcmp(text,"int"))
-			return(sizeof(int));
-	        if(!strcmp(text,"double"))
-			return(sizeof(double));
-		if(!strcmp(text,"float"))
-			return(sizeof(float));
-		if(!strcmp(text,"char"))
-			return(sizeof(char));
-		if(!strcmp(text,"long"))
-			return(sizeof(long));
-		else 
-			return 0;
-
-	}
-
-#line 683 "lex.yy.c"
+#line 630 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -897,9 +844,10 @@ YY_DECL
 		}
 
 	{
-#line 68 "project.l"
+#line 14 "project.l"
 
-#line 903 "lex.yy.c"
+
+#line 851 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -969,134 +917,104 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 69 "project.l"
-{return HEADER;}
+#line 16 "project.l"
+{yylval.txt = strdup(yytext);return HEADER;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 70 "project.l"
-{return DEFINE;}
+#line 17 "project.l"
+{yylval.txt = strdup(yytext);return DEFINE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 72 "project.l"
-{initEntry(yytext);
-														    strcpy(symtab[tcnt].type,"Keyword");
-															symtab[tcnt].size = size(yytext);
-															printf("%d",symtab[tcnt].size);	
-														    tcnt++;
-														    ECHO;
-															yylval.text = strdup(yytext);
-														    return type_const;}
+#line 19 "project.l"
+{yylval.txt = strdup(yytext);
+																		ECHO;
+														    			return type_const;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 81 "project.l"
-{initEntry(yytext); 
-														    strcpy(symtab[tcnt].type,"Keyword");
-														    tcnt++;
-															yylval.text = strdup(yytext);
-														    ECHO;return CASE;}
+#line 23 "project.l"
+{yylval.txt = strdup(yytext);
+														   		 ECHO;return CASE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 86 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														    tcnt++;
-														    ECHO;yylval.text = strdup(yytext);return DEFAULT;}
+#line 25 "project.l"
+{yylval.txt = strdup(yytext);
+														    ECHO;return DEFAULT;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 89 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														    tcnt++;
-														    ECHO;yylval.text = strdup(yytext);return SWITCH;}
+#line 27 "project.l"
+{yylval.txt = strdup(yytext);
+														    ECHO;return SWITCH;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 92 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 29 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return FOR;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 96 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														  
-														    tcnt++;yylval.text = strdup(yytext);
+#line 31 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return CONTINUE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 100 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														 
-														    tcnt++;yylval.text = strdup(yytext);
+#line 33 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return BREAK;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 104 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Keyword");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 35 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return RETURN;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 108 "project.l"
-{ initEntry(yytext);strcpy(symtab[tcnt].type,"LogicalOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 37 "project.l"
+{ yylval.txt = strdup(yytext);
 														    ECHO;return or_const;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 112 "project.l"
-{initEntry(yytext); strcpy(symtab[tcnt].type,"LogicallOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 39 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return and_const;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 116 "project.l"
-{initEntry(yytext); strcpy(symtab[tcnt].type,"RelationalOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 41 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return eq_const;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 120 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"RelationalOp");
-														   
-														    tcnt++;yylval.text = strdup(yytext);
+#line 43 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return rel_const;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 124 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"IncrementalOp");
-														   
-														    tcnt++;yylval.text = strdup(yytext);
+#line 45 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return inc_const;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 128 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"AssignmentOp");
-														    tcnt++;yylval.text = strdup(yytext);
+#line 48 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return yytext[0];}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 132 "project.l"
-{   initEntry(yytext); strcpy(symtab[tcnt].type,"Punctuation");
-														    tcnt++;yylval.text = strdup(yytext);
-														    /*printf("\nyytext = %s/-",yytext);*/
+#line 50 "project.l"
+{yylval.txt = strdup(yytext);
+														    printf("\nyytext = %s/-",yytext);
 														    if(strcmp(yytext,"{")==0){
 															//open_brack++;
 															bal_brack++;
@@ -1105,102 +1023,89 @@ YY_RULE_SETUP
 															strcpy(prev,yytext);
 														    }
 														    else if(strcmp(yytext,"}")==0){
-														        //close_brack++;	
+														        //close_brack++;
 															bal_brack--;
 															if(strcmp(prev,"{")==0)
 																temp = bal_brack+1;
-																
+
 															strcpy(prev,yytext);
 														    }
-														   		
+
 														    ECHO;return yytext[0];}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 153 "project.l"
-{initEntry(yytext); strcpy(symtab[tcnt].type,"ArithmeticOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 70 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return yytext[0];}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 157 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"LogicalOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 72 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return yytext[0];}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 161 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"RelationalOp");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 74 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return yytext[0];}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 165 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Integer");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 76 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return int_const;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 169 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Float");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 78 "project.l"
+{yylval.txt= strdup(yytext);
 														    ECHO;return float_const;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 173 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Character");
-														    
-														    tcnt++;yylval.text = strdup(yytext);
+#line 80 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return char_const;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 177 "project.l"
-{initEntry(yytext);strcpy(symtab[tcnt].type,"Identifier");
-														  /* printf("ID = %s\n",yytext);*/
-														    tcnt++;yylval.text = strdup(yytext);
+#line 82 "project.l"
+{yylval.txt = strdup(yytext);
 														    ECHO;return id;}
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 181 "project.l"
-{ECHO;yylval.text = strdup(yytext);return string;}
+#line 84 "project.l"
+{yylval.txt = strdup(yytext);
+																			ECHO;return string;}
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 182 "project.l"
+#line 86 "project.l"
 ;
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 183 "project.l"
+#line 87 "project.l"
 ;
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 184 "project.l"
+#line 88 "project.l"
 {ECHO;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 185 "project.l"
+#line 89 "project.l"
 ECHO;
 	YY_BREAK
-#line 1204 "lex.yy.c"
+#line 1109 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2213,7 +2118,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 185 "project.l"
+#line 89 "project.l"
 
 
 
@@ -2221,7 +2126,4 @@ int yywrap(void)
 {
     return 1;
 }
-
-
-
 

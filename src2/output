@@ -1,0 +1,11 @@
+$t0	=	i	>	10
+if( not $t0)	goto $L1
+$t1	=	a	+	b
+a	=	$t1
+$t2	=	a	*	b
+c	=	$t2
+$t3	=	c	+	1
+c	=	$t3
+		goto $L0
+$L1: 
+a	=	10

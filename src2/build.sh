@@ -1,4 +1,5 @@
+clear
 lex project.l
-yacc -d project.y
+yacc -d -v project.y
 gcc y.tab.c lex.yy.c -ll -ly
-./a.out < input.c > lexicalop.txt
+./a.out < inputcodegen1.c > lexicalop.txt
