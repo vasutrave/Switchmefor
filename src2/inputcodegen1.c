@@ -3,7 +3,8 @@
 int main()
 {
 	int a,b,c;
-	for(;i>10;)
+	a = 1;
+	for(;i < 9;i = i + 1)
 	{
 		a = a + b;
 		c = a * b;

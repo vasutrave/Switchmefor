@@ -37,6 +37,7 @@
 	void for_start();
 	void for_rep();
 	void for_end();
+	void for_inc();
 	void switch_start();
 	void switch_case(char* text);
 	void switch_end();
@@ -161,9 +162,7 @@ labeled_stat				: id ':' stat
 							| CASE const_exp ':' stat{insert(1,$1,"Keyword");{switch_case($2);} }
 							| DEFAULT ':' stat{insert(1,$1,"Keyword");}
 							;
-exp_stat					: exp ';'
-							| ';'
-							;
+
 compound_stat				: '{' decl_list stat_list '}'
 							| '{' stat_list '}'
 							| '{' decl_list	'}'
@@ -174,25 +173,23 @@ stat_list					: stat
 							;
 selection_stat				: SWITCH '(' exp ')' {switch_start();}stat {insert(1,$1,"Keyword");switch_end();}
 							;
-iteration_stat				: FOR '(' exp ';' exp ';' exp ')' stat{insert(1,$1,"Keyword");}
-							| FOR '(' exp ';' exp ';'	')' stat{insert(1,$1,"Keyword");}
-							| FOR '(' exp ';' ';' exp ')' stat{insert(1,$1,"Keyword");}
-							| FOR '(' exp ';' ';' ')' {for_start();}stat{insert(1,$1,"Keyword");for_end_iri();}
-							| FOR '(' M ';' exp ';' exp ')' stat{insert(1,$1,"Keyword");}
-							| FOR '(' ';' exp ';' ')' {for_rep();}stat{insert(1,$1,"Keyword");for_end();}
-							| FOR '(' ';' ';'{for_start();} exp ')' stat{insert(1,$1,"Keyword");for_end_iri();}
-							| FOR '(' ';' ';' ')' {for_start();}stat{insert(1,$1,"Keyword");for_end_iri();}
+iteration_stat				: FOR '(' exp_stat {for_start();} exp_stat{for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}
+					
 							;
-M 							:{for_start();} 
-							;
+
 jump_stat					: CONTINUE ';'{insert(1,$1,"Keyword");}
 							| BREAK ';'{insert(1,$1,"Keyword");}
 							| RETURN exp ';'{insert(1,$1,"Keyword");}
 							| RETURN ';'{insert(1,$1,"Keyword");}
 							;
-exp							: assignment_exp
-							| exp ',' assignment_exp
+exp_stat					: exp ';'
+							| ';'
 							;
+exp							: assignment_exp 
+							| exp ',' assignment_exp
+							|
+							;
+
 assignment_exp				: conditional_exp
 							| unary_exp{push($1);} '='{push("=");} conditional_exp{codegen_assign();}
 							;
@@ -305,14 +302,12 @@ void insert(int type,char* text, char* toktype)
 					tcnt++;
 				    break;
 			case 2:
-				printf("IN ACSE 2\n");
-				printf("text = %s\n",text);
 				for(int i = 0; i < strlen(text);i++)
 				{
 					if(text[i] != '~'){
 						var_name[var_len] = text[i];
 						var_len++;
-						printf("NEw var_name = %s\n",var_name);
+					
 					}
 
 					else if(text[i] == '~'){
@@ -320,7 +315,7 @@ void insert(int type,char* text, char* toktype)
 						initEntry(var_name);
 						if(strcmp(var_name,"main")==0)
 						{
-							printf("RECOG MAIN\n");
+							
 							strcpy(temp,toktype);
 							strcat(toktype,"-func");
 							strcpy(symtab[tcnt].type,toktype);
@@ -329,7 +324,7 @@ void insert(int type,char* text, char* toktype)
 						}
 						else if(flag == 2)
 						{
-							printf("Value of arr = %d\n",arr);
+							
 							strcpy(temp,toktype);
 							strcat(toktype,"-arr");
 							strcpy(symtab[tcnt].type,toktype);
@@ -359,17 +354,19 @@ void insert(int type,char* text, char* toktype)
 		}
 										
 	}
-/*void for_init_inc()
+void for_inc()
 {
-	fprintf()
 	
-}*/
+		
+		fprintf(f1,"$L%d:\n",lnum);
+}
 	
 void for_start()
 	{
 		lnum++;
 		label[++ltop]=lnum;
 		fprintf(f1,"$L%d:\n",lnum);
+
 	}
 void for_rep()
 	{
@@ -377,14 +374,22 @@ void for_rep()
  	fprintf(f1,"if( not %s)",st[top]);
  	fprintf(f1,"\tgoto $L%d\n",lnum);
  	label[++ltop]=lnum;
+ 	lnum++;
+ 	fprintf(f1,"\tgoto $L%d\n",lnum);
+ 	label[++ltop]=lnum;
+ 	lnum++;
+	label[++ltop]=lnum;
+	fprintf(f1,"$L%d:\n",lnum);
+
 	}
 void for_end()
 	{
 	int x,y;
 	y=label[ltop--];
-	x=label[ltop--];
-	fprintf(f1,"\t\tgoto $L%d\n",x);
-	fprintf(f1,"$L%d: \n",y);
+	x=label[ltop-1];
+	ltop--;
+	fprintf(f1,"\t\tgoto $L%d\n",y);
+	fprintf(f1,"$L%d: \n",x);
 	top--;
 	}
 void for_end_iri()
