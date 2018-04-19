@@ -3,7 +3,6 @@
 	#include "symtab.h"
 	#include <string.h> 
 	#include <stdlib.h>
-	#include "for.h"
 	int yylex(void);
 	int yyerror(const char *s);
 	int success = 1;
@@ -35,10 +34,16 @@
 	void codegen_algebric();
 	void intermediateCode();
 	void codegen_assign();
-	
+	void codegen_unary();
+	void for_start();
+	void for_rep();
+	void for_end();
+	void for_inc();
 	void switch_start();
 	void switch_case(char* text);
 	void switch_end();
+	void for_end_iri();
+	void end_loop();
 	FILE* f1;
 	int i =0;
 
@@ -170,22 +175,17 @@ stat_list					: stat
 							;
 selection_stat				: SWITCH '(' exp ')' {switch_start();}stat {insert(1,$1,"Keyword");switch_end();}
 							;
-iteration_stat				: FOR '(' exp_stat {for_cond_num=0;for_start($3);} exp_stat{if(strlen($3)==1)for_cond_num++;for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}
-				
+iteration_stat				: FOR '(' exp_stat {for_start();} exp_stat{for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}
 					
 							;
 
 jump_stat					: CONTINUE ';'{insert(1,$1,"Keyword");}
-							| BREAK ';'{insert(1,$1,"Keyword");}
+							| BREAK ';'{insert(1,$1,"Keyword");end_loop();}
 							| RETURN exp ';'{insert(1,$1,"Keyword");}
 							| RETURN ';'{insert(1,$1,"Keyword");}
 							;
-exp_stat					: 	exp ';'
-							| ';'
+exp_stat					: exp ';'
 							;
-
-
-
 exp							: assignment_exp 
 							| exp ',' assignment_exp
 							|
@@ -234,14 +234,14 @@ mult_exp					: unary_exp
 							;
 
 unary_exp					: postfix_exp
-							| inc_const unary_exp
+							| inc_const{push($1);} unary_exp{codegen_unary();}
 							;
 
 postfix_exp					: primary_exp
 							| postfix_exp '[' exp ']'
 							| postfix_exp '(' argument_exp_list ')'
 							| postfix_exp '(' ')'
-							| postfix_exp inc_const
+							| postfix_exp inc_const{push($2);codegen_unary();}
 							;
 primary_exp					: id {$$ = $1;insert(1,$1,"Id");push($1);}
 							| consts {$$ = $1;push($1);}
@@ -299,7 +299,6 @@ void insert(int type,char* text, char* toktype)
 			case 1:
 					initEntry(text);
 					strcpy(symtab[tcnt].type,toktype);
-
 					tcnt++;
 				    break;
 			case 2:
@@ -342,13 +341,71 @@ void insert(int type,char* text, char* toktype)
 						strcpy(var_name,"");
 						var_len = 0;
 					}
+					
+				   
+
 				}
 				 break;
+
+					
+
+
+
 		}
 										
 	}
+void end_loop()
+{
+		fprintf(f1,"\tgoto $L%d\n",lnum-2);	
+}
+void for_inc()
+{
+	
+		fprintf(f1,"\tgoto $L%d\n",lnum-3);
+		fprintf(f1,"$L%d:\n",lnum-1);
+}
+	
+void for_start()
+	{
+		lnum++;
+		label[++ltop]=lnum;
+		fprintf(f1,"$L%d:\n",lnum);
 
+	}
+void for_rep()
+	{
+	lnum++;
+ 	fprintf(f1,"if( not %s)",st[top]);
+ 	fprintf(f1,"\tgoto $L%d\n",lnum);
+ 	label[++ltop]=lnum;
+ 	lnum++;
+ 	fprintf(f1,"\tgoto $L%d\n",lnum);
+ 	label[++ltop]=lnum;
+ 	lnum++;
+	label[++ltop]=lnum;
+	fprintf(f1,"$L%d:\n",lnum);
 
+	}
+void for_end()
+	{
+	int x,y;
+	y=label[ltop--];
+	x=label[ltop-1];
+	ltop = ltop - 2;
+	fprintf(f1,"\t\tgoto $L%d\n",y);
+	fprintf(f1,"$L%d: \n",x);
+	ltop--;
+	}
+
+void for_end_iri()
+	{
+	int x,y;
+	y=label[ltop--];
+	//x=label[ltop--];
+	fprintf(f1,"\t\tgoto $L%d\n",y);
+	//fprintf(f1,"$L%d: \n",y);
+	top--;
+	}
 int size(char* text)
 	{
 		if(!strcmp(text,"int"))
@@ -406,68 +463,32 @@ void switch_end()
 	stop--;
 }
 
-
-void for_inc()
-{
-		//fprintf(f1,"\nfor_inc() prints:\n");
-		fprintf(f1,"\tgoto $L%d\n",lnum-3);
-		fprintf(f1,"$L%d:\n",lnum-1);
-}
-	
-void for_start(char* text)
-{
-		//fprintf(f1,"\nfor_start()\nLen = %d\n",strlen(text));
-		if(strlen(text)==1){
-			for_cond_num++;
-		}
-		lnum++;
-		label[++ltop]=lnum;
-		fprintf(f1,"$L%d:\n",lnum);
-}
-
-void for_rep()
-{
-	//fprintf(f1,"\nfor_rep() prints:\n");
-	lnum++;
-	if(for_cond_num < 2){
-	
- 		fprintf(f1,"if( not %s)",st[top]);
- 		fprintf(f1,"\tgoto $L%d\n",lnum);
-	}
- 	label[++ltop]=lnum;
- 	lnum++;
- 	fprintf(f1,"\tgoto $L%d\n",lnum);
- 	label[++ltop]=lnum;
- 	lnum++;
-	label[++ltop]=lnum;
-	fprintf(f1,"$L%d:\n",lnum);
-	//}
-	/*if(for_cond_num == 2)//if both init and test exp not there
-	{
-		
-	}*/
-}
-
-void for_end()
-{
-	//fprintf(f1,"\nfor_end() prints:\n");
-	int x,y;
-	y=label[ltop--];
-	x=label[ltop-1];
-	ltop = ltop - 2;
-	fprintf(f1,"\t\tgoto $L%d\n",y);
-	fprintf(f1,"$L%d: \n",x);
-	ltop--;
-}
-
-
-
 void push(char* text)
 {
 	printf(">PUSHING: %s<",text);
   	strcpy(st[++top],text);
 }
 
+void codegen_unary()
+{
+ 	sprintf(tempo,"$t%d",i);
+ 	if(strcmp(st[top],"++") == 0 || strcmp(st[top],"--") == 0)
+  	{	
+  		fprintf(f1,"%s\t=\t%s\t%c\t1\n",tempo,st[top-1],st[top][1]);
+  		fprintf(f1,"%s\t=\t%s\n",st[top-1],tempo);
+  		top-=2;
+  	}
+  	else{
+  		fprintf(f1,"%s\t=\t%s\t%c\t1\n",tempo,st[top],st[top-1][1]);
+  		fprintf(f1,"%s\t=\t%s\n",st[top],tempo);
+  		top-=2;
+
+  	}
+  
+  	
+ 	strcpy(st[top],tempo);
+ 	i++;
+}
 void codegen_logical()
 {
  	sprintf(tempo,"$t%d",i);
@@ -580,30 +601,24 @@ int main()
 			{
 				if(!strcmp(symtab[i].type, "Id"))
 				{
-					if(!strcmp(symtab[i].symbol, "printf"))
+					
+					for(int j=0;j<tcnt;j++)
 					{
-						printf("Undefined reference to function at %d\n", symtab[i].lineno);
-					}
-					else
-					{
-						for(int j=0;j<tcnt;j++)
+						if(!strcmp(symtab[j].symbol, symtab[i].symbol)&& strcmp(symtab[j].type, "Id"))
 						{
-							if(!strcmp(symtab[j].symbol, symtab[i].symbol)&& strcmp(symtab[j].type, "Id"))
-							{
 
-								present_flag = 1;
-								break;
-								
-							}
-
+							present_flag = 1;
+							break;
+						
 						}
-						if(present_flag == 0)
-							printf("Undefined variable at %d\n", symtab[i].lineno);
-						present_flag=0;
 					}
+					if(present_flag == 0)
+						printf("Undefined variable at %d\n", symtab[i].lineno);
+					present_flag=0;
 				}
-			}
-		}
+		    }
+	    }
+
 		for(int i = 0; i < tcnt; i ++)
 		{
 			if(symtab[i].tok_num != 0)
