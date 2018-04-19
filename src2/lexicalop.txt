@@ -12,34 +12,37 @@ yytext = {/-{
 yytext = ,/-,b
 yytext = ,/-,c
 yytext = ;/-;CHECK THIS OUT: int~~a###main~a~b~c~
-IN ACSE 2
-text = main~a~b~c~
-NEw var_name = m4a
-NEw var_name = maa
-NEw var_name = mai
-NEw var_name = main
-RECOG MAIN
-NEw var_name = aain
-NEw var_name = b
-NEw var_name = c
 
-	for
-yytext = (/-(
-yytext = ;/-;i>PUSHING: i<>>PUSHING: ><10>PUSHING: 10<
+	a =>PUSHING: a<>PUSHING: a<>PUSHING: =< 1>PUSHING: 1<
 yytext = ;/-;
+	for
+yytext = (/-(i>PUSHING: i< =>PUSHING: i<>PUSHING: =< 0>PUSHING: 0<
+yytext = ;/-; i>PUSHING: i< <>PUSHING: << 10>PUSHING: 10<
+yytext = ;/-; i>PUSHING: i< ++>PUSHING: ++<
 yytext = )/-)
 	
 yytext = {/-{
-		a =>PUSHING: a<>PUSHING: a<>PUSHING: =< a>PUSHING: a< +>PUSHING: +< b>PUSHING: b<
+	
+		a =>PUSHING: a<>PUSHING: a<>PUSHING: =< 10>PUSHING: 10<
 yytext = ;/-;
-		c =>PUSHING: c<>PUSHING: c<>PUSHING: =< a>PUSHING: a< *>PUSHING: *< b>PUSHING: b<
+		break
 yytext = ;/-;
-		c =>PUSHING: c<>PUSHING: c<>PUSHING: =< c>PUSHING: c< +>PUSHING: +< 1>PUSHING: 1<
+		a =>PUSHING: a<>PUSHING: a<>PUSHING: =< a>PUSHING: a< ->PUSHING: -< 10>PUSHING: 10<
 yytext = ;/-;
 	
 yytext = }/-}
-	a =>PUSHING: a<>PUSHING: a<>PUSHING: =< 10>PUSHING: 10<
+	for
+yytext = (/-(j>PUSHING: j< =>PUSHING: j<>PUSHING: =< 0>PUSHING: 0<
+yytext = ;/-;j>PUSHING: j< <>PUSHING: << 10>PUSHING: 10<
+yytext = ;/-;j>PUSHING: j<++>PUSHING: ++<
+yytext = )/-)
+	
+yytext = {/-{
+
+		m =>PUSHING: m<>PUSHING: m<>PUSHING: =< j>PUSHING: j< +>PUSHING: +< 1>PUSHING: 1<
 yytext = ;/-;
+	
+yytext = }/-}
 
 yytext = }/-}
 
@@ -57,27 +60,52 @@ Scope_Num	Tok_Num		 Symbol			TypeOfToken		Line Number	Size
     1		    4		       a		     int		    5		    4
     1		    5		       b		     int		    5		    4
     1		    6		       c		     int		    5		    4
-    1		    7		       i		      Id		    6		    0
-    2		    8		       a		      Id		    8		    0
-    2		   10		       b		      Id		    8		    0
-    2		   11		       c		      Id		    9		    0
-    1		   16		     for		 Keyword		   11		    0
-Total number of tokens : 18
-Undefined variable at 6
+    1		    8		       i		      Id		    7		    0
+    2		   11		       a		      Id		   10		    0
+    2		   12		   break		 Keyword		   11		    0
+    1		   15		     for		 Keyword		   13		    0
+    1		   16		       j		      Id		   14		    0
+    2		   19		       m		      Id		   17		    0
+    2		   20		       j		      Id		   17		    0
+Total number of tokens : 22
+Undefined variable at 7
+Undefined variable at 14
+Undefined variable at 17
+Undefined variable at 17
 
 
 
 *********************InterMediate Code***************************
 
-  1:	$t0	=	i	>	10
-  2:	if( not $t0)	goto $L1
-  3:	$t1	=	a	+	b
-  4:	a	=	$t1
-  5:	$t2	=	a	*	b
-  6:	c	=	$t2
-  7:	$t3	=	c	+	1
-  8:	c	=	$t3
-  9:			goto $L0
- 10:	$L1: 
- 11:	a	=	10
- 12:	end
+  1:	a	=	1
+  2:	i	=	0
+  3:	$L1:
+  4:	$t0	=	i	<	10
+  5:	if( not $t0)	goto $L2
+  6:		goto $L3
+  7:	$L4:
+  8:	$t1	=	i	+	1
+  9:	i	=	$t1
+ 10:		goto $L1
+ 11:	$L3:
+ 12:	a	=	10
+ 13:		goto $L2
+ 14:	$t2	=	a	-	10
+ 15:	a	=	$t2
+ 16:			goto $L4
+ 17:	$L2: 
+ 18:	j	=	0
+ 19:	$L5:
+ 20:	$t3	=	j	<	10
+ 21:	if( not $t3)	goto $L6
+ 22:		goto $L7
+ 23:	$L8:
+ 24:	$t4	=	j	+	1
+ 25:	j	=	$t4
+ 26:		goto $L5
+ 27:	$L7:
+ 28:	$t5	=	j	+	1
+ 29:	m	=	$t5
+ 30:			goto $L8
+ 31:	$L6: 
+ 32:	end

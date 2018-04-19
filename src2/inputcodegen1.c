@@ -4,11 +4,16 @@ int main()
 {
 	int a,b,c;
 	a = 1;
-	for(;i < 9;i = i + 1)
+	for(i = 0; i < 10; i ++)
 	{
-		a = a + b;
-		c = a * b;
-		c = c + 1;
+	
+		a = 10;
+		break;
+		a = a - 10;
 	}
-	a = 10;
+	for(j = 0;j < 10;j++)
+	{
+
+		m = j + 1;
+	}
 }
