@@ -42,6 +42,10 @@
 	void switch_start();
 	void switch_case(char* text);
 	void switch_end();
+	void switch_default();
+	void switch_break();
+	void switch_nobreak();
+	int break_found = 0;
 	void for_end_iri();
 	void end_loop();
 	FILE* f1;
@@ -153,16 +157,23 @@ direct_abstract_declarator	: '(' abstract_declarator ')'
 							| '(' ')'
 							;
 
+stat_list					: stat
+							| stat_list stat
+							;
+
 stat						: labeled_stat
 							| exp_stat
 							| compound_stat
 							| selection_stat
 							| iteration_stat
-							| jump_stat
+							| jump_stat{fprintf(f1,"Jump STatement\n");}
 							;
 labeled_stat				: id ':' stat
-							| CASE const_exp ':' stat{insert(1,$1,"Keyword");{switch_case($2);} }
-							| DEFAULT ':' stat{insert(1,$1,"Keyword");}
+							| CASE const_exp ':' {break_found=0;switch_case($2);}stat{insert(1,$1,"Keyword");}
+							| DEFAULT ':' stat{insert(1,$1,"Keyword");switch_default();}
+							;
+
+SwitchNoBreak               :{if(break_found==0)switch_nobreak();}
 							;
 
 compound_stat				: '{' decl_list stat_list '}'
@@ -170,9 +181,7 @@ compound_stat				: '{' decl_list stat_list '}'
 							| '{' decl_list	'}'
 							| '{' '}'
 							;
-stat_list					: stat
-							| stat_list stat
-							;
+
 selection_stat				: SWITCH '(' exp ')' {switch_start();}stat {insert(1,$1,"Keyword");switch_end();}
 							;
 iteration_stat				: FOR '(' exp_stat {for_start();} exp_stat{for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}
@@ -180,7 +189,7 @@ iteration_stat				: FOR '(' exp_stat {for_start();} exp_stat{for_rep();}  exp{fo
 							;
 
 jump_stat					: CONTINUE ';'{insert(1,$1,"Keyword");}
-							| BREAK ';'{insert(1,$1,"Keyword");end_loop();}
+							| BREAK ';'{insert(1,$1,"Keyword");/*end_loop()*/switch_break();break_found=1;}
 							| RETURN exp ';'{insert(1,$1,"Keyword");}
 							| RETURN ';'{insert(1,$1,"Keyword");}
 							;
@@ -424,14 +433,17 @@ int size(char* text)
 	}
 void switch_start()
 {
+	fprintf(f1,"\nswitch_start\n");
 	lnum++;
 	label[++ltop]=lnum;
 	lnum++;
 	label[++ltop]=lnum;
 	switch_stack[++stop]=1;
+	fprintf(f1,"\n----------------------\n");
 }
 void switch_case(char* text)
 {
+	fprintf(f1,"\nSwitch_case\n");
 	int x,y,z;
 	z=switch_stack[stop--];
 	if(z==1)
@@ -446,21 +458,50 @@ void switch_case(char* text)
 	fprintf(f1,"$L%d:\n",x);
 	lnum++;
 	label[++ltop]=lnum;
- 	fprintf(f1,"if(%s != %s)",st[top],text);
+ 	fprintf(f1,"if(%s != %s)",st[top-1],text);
  	fprintf(f1,"\tgoto $L%d\n",label[ltop]);
  	if(z==2)
  	{
  		fprintf(f1,"$L%d:\n",y);
  	}
+	fprintf(f1,"\n----------------------\n");
+
 }
 void switch_end()
 {
+	fprintf(f1,"\nSwitch_end\n");
 	int x=label[ltop--];
 	fprintf(f1,"$L%d:\n",x);
 	x=label[ltop--];
 	fprintf(f1,"$L%d:\n",x);
 	top--;
 	stop--;
+	fprintf(f1,"\n----------------------\n");
+}
+void switch_default()
+{
+	fprintf(f1,"\nSwitch_default\n");
+	int x=label[ltop--];
+	fprintf(f1,"$L%d:\n",x);
+	lnum++;
+	label[++ltop]=lnum;
+}
+void switch_break()
+{
+	fprintf(f1,"\nSwitch_break\n");
+	switch_stack[++stop]=1;
+	fprintf(f1,"\t\tgoto $L%d\n",label[ltop-1]);
+	fprintf(f1,"\n----------------------\n");
+}
+void switch_nobreak()
+{
+	fprintf(f1,"\nSwitch_nobreak\n");
+	switch_stack[++stop]=2;
+	lnum++;
+	label[++ltop]=lnum;
+	fprintf(f1,"\t\tgoto $L%d\n",label[ltop]);
+	fprintf(f1,"\n----------------------\n");
+
 }
 
 void push(char* text)
