@@ -1,0 +1,139 @@
+
+Code After Stripping off Comments:
+-------------------------------------------------------------------------------------------------
+
+
+int main
+yytext = (/-(
+yytext = )/-)
+
+yytext = {/-{
+	int a
+yytext = ,/-,b
+yytext = ,/-,c
+yytext = ;/-;CHECK THIS OUT: int~~a###main~a~b~c~
+
+	float D
+yytext = ;/-;CHECK THIS OUT: float~~D###D~
+
+	a =>PUSHING: a<>PUSHING: a<>PUSHING: =< 1>PUSHING: 1<
+yytext = ;/-;
+	a +>PUSHING: a<>PUSHING: +< 1>PUSHING: 1< +>PUSHING: +< 2>PUSHING: 2<
+yytext = ;/-;
+	
+
+	
+	
+	c =>PUSHING: c<>PUSHING: c<>PUSHING: =< 0>PUSHING: 0<
+yytext = ;/-;
+
+	switch
+yytext = (/-(a>PUSHING: a<+>PUSHING: +<1>PUSHING: 1<
+yytext = )/-)
+	
+yytext = {/-{
+		case 1>PUSHING: 1<
+yytext = :/-:
+			b =>PUSHING: b<>PUSHING: b<>PUSHING: =< a>PUSHING: a< +>PUSHING: +< 1>PUSHING: 1<
+yytext = ;/-;
+			break
+yytext = ;/-;
+		
+		case 2>PUSHING: 2<
+yytext = :/-:
+			b =>PUSHING: b<>PUSHING: b<>PUSHING: =< a>PUSHING: a< +>PUSHING: +< 2>PUSHING: 2<
+yytext = ;/-;
+
+		case 3>PUSHING: 3<
+yytext = :/-:
+			c =>PUSHING: c<>PUSHING: c<>PUSHING: =< a>PUSHING: a< +>PUSHING: +< 5>PUSHING: 5<
+yytext = ;/-;
+
+	
+yytext = }/-}
+
+	D =>PUSHING: D<>PUSHING: D<>PUSHING: =< 0>PUSHING: 0<
+yytext = ;/-;
+	
+
+yytext = }/-}
+
+-------------------------------------------------------------------------------------------------
+
+					Parsing Successful!
+
+
+					SYMBOL TABLE
+
+Scope_Num	Tok_Num		 Symbol			TypeOfToken		Line Number	Size
+----------------------------------------------------------------------------------------------
+    0		    1		     int		 Keyword		    3		    0
+    1		    3		    main		int-func		    5		    0
+    1		    4		       a		     int		    5		    4
+    1		    5		       b		     int		    5		    4
+    1		    6		       c		     int		    5		    4
+    1		    7		   float		 Keyword		    6		    0
+    1		    8		       D		   float		    6		    4
+    2		   13		       b		      Id		   30		    0
+    2		   14		       a		      Id		   30		    0
+    2		   15		    case		 Keyword		   30		    0
+    2		   16		   break		 Keyword		   31		    0
+    2		   20		       c		      Id		   37		    0
+    1		   23		  switch		 Keyword		   39		    0
+Total number of tokens : 25
+
+
+
+*********************InterMediate Code***************************
+
+  1:	a	=	1
+  2:	$t0	=	a	+	1
+  3:	$t1	=	$t0	+	2
+  4:	c	=	0
+  5:	$t2	=	a	+	1
+  6:	
+  7:	switch_start
+  8:	
+  9:	----------------------
+ 10:	
+ 11:	Switch_case
+ 12:	z=1
+ 13:	z==1
+ 14:	$L2:
+ 15:	if(a != 1)	goto $L2
+ 16:	
+ 17:	----------------------
+ 18:	$t3	=	a	+	1
+ 19:	b	=	$t3
+ 20:	
+ 21:	Switch_break
+ 22:			goto $L1
+ 23:	
+ 24:	----------------------
+ 25:	
+ 26:	Switch_case
+ 27:	z=1
+ 28:	z==1
+ 29:	$L3:
+ 30:	if(a != 2)	goto $L3
+ 31:	
+ 32:	----------------------
+ 33:	$t4	=	a	+	2
+ 34:	b	=	$t4
+ 35:	
+ 36:	Switch_case
+ 37:	z=0
+ 38:	$L3:
+ 39:	if(a != 3)	goto $L4
+ 40:	
+ 41:	----------------------
+ 42:	$t5	=	a	+	5
+ 43:	c	=	$t5
+ 44:	
+ 45:	Switch_end
+ 46:	$L5:
+ 47:	$L4:
+ 48:	
+ 49:	----------------------
+ 50:	D	=	0
+ 51:	end

@@ -1,0 +1,3488 @@
+Terminals unused in grammar
+
+   point_const
+   ELSE
+
+
+State 32 conflicts: 1 shift/reduce
+State 67 conflicts: 1 shift/reduce
+State 72 conflicts: 1 shift/reduce
+State 73 conflicts: 1 shift/reduce
+State 122 conflicts: 1 shift/reduce
+State 123 conflicts: 1 shift/reduce
+State 132 conflicts: 1 shift/reduce
+State 174 conflicts: 1 shift/reduce
+State 205 conflicts: 1 shift/reduce
+State 207 conflicts: 1 shift/reduce
+State 221 conflicts: 1 shift/reduce
+State 229 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program_unit $end
+
+    1 program_unit: HEADER program_unit
+    2             | DEFINE primary_exp program_unit
+    3             | translation_unit
+
+    4 translation_unit: external_decl
+    5                 | translation_unit external_decl
+
+    6 external_decl: function_definition
+    7              | decl
+
+    8 function_definition: decl_specs declarator decl_list compound_stat
+    9                    | declarator decl_list compound_stat
+   10                    | decl_specs declarator compound_stat
+   11                    | declarator compound_stat
+
+   12 decl: decl_specs init_declarator_list ';'
+   13     | decl_specs ';'
+
+   14 decl_list: decl
+   15          | decl_list decl
+
+   16 decl_specs: type_spec decl_specs
+   17           | type_spec
+
+   18 type_spec: type_const
+
+   19 init_declarator_list: init_declarator
+   20                     | init_declarator_list ',' init_declarator
+
+   21 init_declarator: declarator
+   22                | declarator '=' initializer
+
+   23 declarator: direct_declarator
+
+   24 direct_declarator: id
+   25                  | '(' declarator ')'
+   26                  | direct_declarator '[' const_exp ']'
+   27                  | direct_declarator '[' ']'
+   28                  | direct_declarator '(' param_type_list ')'
+   29                  | direct_declarator '(' id_list ')'
+   30                  | direct_declarator '(' ')'
+
+   31 param_type_list: param_list
+   32                | param_list ',' param_const
+
+   33 param_list: param_decl
+   34           | param_list ','
+
+   35 param_decl: decl_specs declarator
+   36           | decl_specs abstract_declarator
+   37           | decl_specs
+
+   38 id_list: id
+   39        | id_list ',' id
+
+   40 initializer: assignment_exp
+   41            | '{' initializer_list '}'
+   42            | '{' initializer_list ',' '}'
+
+   43 initializer_list: initializer
+   44                 | initializer_list ',' initializer
+
+   45 abstract_declarator: direct_abstract_declarator
+
+   46 direct_abstract_declarator: '(' abstract_declarator ')'
+   47                           | direct_abstract_declarator '[' const_exp ']'
+   48                           | '[' const_exp ']'
+   49                           | direct_abstract_declarator '[' ']'
+   50                           | '[' ']'
+   51                           | direct_abstract_declarator '(' param_type_list ')'
+   52                           | '(' param_type_list ')'
+   53                           | direct_abstract_declarator '(' ')'
+   54                           | '(' ')'
+
+   55 stat_list: stat
+   56          | stat_list stat
+
+   57 stat: labeled_stat
+   58     | exp_stat
+   59     | compound_stat
+   60     | selection_stat
+   61     | iteration_stat
+   62     | jump_stat
+
+   63 labeled_stat: id ':' stat
+
+   64 $@1: %empty
+
+   65 labeled_stat: CASE const_exp ':' $@1 stat
+
+   66 $@2: %empty
+
+   67 labeled_stat: DEFAULT ':' $@2 stat
+
+   68 compound_stat: '{' decl_list stat_list '}'
+   69              | '{' stat_list '}'
+   70              | '{' decl_list '}'
+   71              | '{' '}'
+
+   72 $@3: %empty
+
+   73 selection_stat: SWITCH '(' exp ')' $@3 stat
+
+   74 $@4: %empty
+
+   75 $@5: %empty
+
+   76 $@6: %empty
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 exp $@6 ')' stat
+
+   78 jump_stat: CONTINUE ';'
+   79          | BREAK ';'
+   80          | RETURN exp ';'
+   81          | RETURN ';'
+
+   82 exp_stat: exp ';'
+   83         | ';'
+
+   84 exp: assignment_exp
+   85    | exp ',' assignment_exp
+   86    | %empty
+
+   87 assignment_exp: conditional_exp
+
+   88 $@7: %empty
+
+   89 $@8: %empty
+
+   90 assignment_exp: unary_exp $@7 '=' $@8 conditional_exp
+
+   91 conditional_exp: logical_or_exp
+
+   92 const_exp: conditional_exp
+
+   93 logical_or_exp: logical_and_exp
+
+   94 $@9: %empty
+
+   95 logical_or_exp: logical_or_exp or_const $@9 logical_and_exp
+
+   96 logical_and_exp: inclusive_or_exp
+
+   97 $@10: %empty
+
+   98 logical_and_exp: logical_and_exp and_const $@10 inclusive_or_exp
+
+   99 inclusive_or_exp: exclusive_or_exp
+
+  100 $@11: %empty
+
+  101 inclusive_or_exp: inclusive_or_exp '|' $@11 exclusive_or_exp
+
+  102 exclusive_or_exp: and_exp
+
+  103 $@12: %empty
+
+  104 exclusive_or_exp: exclusive_or_exp '^' $@12 and_exp
+
+  105 and_exp: equality_exp
+
+  106 $@13: %empty
+
+  107 and_exp: and_exp '&' $@13 equality_exp
+
+  108 equality_exp: relational_exp
+
+  109 $@14: %empty
+
+  110 equality_exp: equality_exp eq_const $@14 relational_exp
+
+  111 relational_exp: additive_exp
+
+  112 $@15: %empty
+
+  113 relational_exp: relational_exp '<' $@15 additive_exp
+
+  114 $@16: %empty
+
+  115 relational_exp: relational_exp '>' $@16 additive_exp
+
+  116 $@17: %empty
+
+  117 relational_exp: relational_exp rel_const $@17 additive_exp
+
+  118 additive_exp: mult_exp
+
+  119 $@18: %empty
+
+  120 additive_exp: additive_exp '+' $@18 mult_exp
+
+  121 $@19: %empty
+
+  122 additive_exp: additive_exp '-' $@19 mult_exp
+
+  123 mult_exp: unary_exp
+
+  124 $@20: %empty
+
+  125 mult_exp: mult_exp '*' $@20 unary_exp
+
+  126 $@21: %empty
+
+  127 mult_exp: mult_exp '/' $@21 unary_exp
+
+  128 $@22: %empty
+
+  129 mult_exp: mult_exp '%' $@22 unary_exp
+
+  130 unary_exp: postfix_exp
+
+  131 $@23: %empty
+
+  132 unary_exp: inc_const $@23 unary_exp
+
+  133 postfix_exp: primary_exp
+  134            | postfix_exp '[' exp ']'
+  135            | postfix_exp '(' argument_exp_list ')'
+  136            | postfix_exp '(' ')'
+  137            | postfix_exp inc_const
+
+  138 primary_exp: id
+  139            | consts
+  140            | string
+  141            | '(' exp ')'
+
+  142 argument_exp_list: assignment_exp
+  143                  | argument_exp_list ',' assignment_exp
+
+  144 consts: int_const
+  145       | char_const
+  146       | float_const
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 129
+'&' (38) 107
+'(' (40) 25 28 29 30 46 51 52 53 54 73 77 135 136 141
+')' (41) 25 28 29 30 46 51 52 53 54 73 77 135 136 141
+'*' (42) 125
+'+' (43) 120
+',' (44) 20 32 34 39 42 44 85 143
+'-' (45) 122
+'/' (47) 127
+':' (58) 63 65 67
+';' (59) 12 13 78 79 80 81 82 83
+'<' (60) 113
+'=' (61) 22 90
+'>' (62) 115
+'[' (91) 26 27 47 48 49 50 134
+']' (93) 26 27 47 48 49 50 134
+'^' (94) 104
+'{' (123) 41 42 68 69 70 71
+'|' (124) 101
+'}' (125) 41 42 68 69 70 71
+error (256)
+char_const (258) 145
+id (259) 24 38 39 63 138
+string (260) 140
+type_const (261) 18
+DEFINE (262) 2
+int_const (263) 144
+float_const (264) 146
+FOR (265) 77
+BREAK (266) 79
+SWITCH (267) 73
+CONTINUE (268) 78
+RETURN (269) 80 81
+CASE (270) 65
+DEFAULT (271) 67
+or_const (272) 95
+and_const (273) 98
+eq_const (274) 110
+rel_const (275) 117
+inc_const (276) 132 137
+point_const (277)
+param_const (278) 32
+ELSE (279)
+HEADER (280) 1
+
+
+Nonterminals, with rules where they appear
+
+$accept (46)
+    on left: 0
+program_unit (47)
+    on left: 1 2 3, on right: 0 1 2
+translation_unit (48)
+    on left: 4 5, on right: 3 5
+external_decl (49)
+    on left: 6 7, on right: 4 5
+function_definition (50)
+    on left: 8 9 10 11, on right: 6
+decl (51)
+    on left: 12 13, on right: 7 14 15
+decl_list (52)
+    on left: 14 15, on right: 8 9 15 68 70
+decl_specs (53)
+    on left: 16 17, on right: 8 10 12 13 16 35 36 37
+type_spec (54)
+    on left: 18, on right: 16 17
+init_declarator_list (55)
+    on left: 19 20, on right: 12 20
+init_declarator (56)
+    on left: 21 22, on right: 19 20
+declarator (57)
+    on left: 23, on right: 8 9 10 11 21 22 25 35
+direct_declarator (58)
+    on left: 24 25 26 27 28 29 30, on right: 23 26 27 28 29 30
+param_type_list (59)
+    on left: 31 32, on right: 28 51 52
+param_list (60)
+    on left: 33 34, on right: 31 32 34
+param_decl (61)
+    on left: 35 36 37, on right: 33
+id_list (62)
+    on left: 38 39, on right: 29 39
+initializer (63)
+    on left: 40 41 42, on right: 22 43 44
+initializer_list (64)
+    on left: 43 44, on right: 41 42 44
+abstract_declarator (65)
+    on left: 45, on right: 36 46
+direct_abstract_declarator (66)
+    on left: 46 47 48 49 50 51 52 53 54, on right: 45 47 49 51 53
+stat_list (67)
+    on left: 55 56, on right: 56 68 69
+stat (68)
+    on left: 57 58 59 60 61 62, on right: 55 56 63 65 67 73 77
+labeled_stat (69)
+    on left: 63 65 67, on right: 57
+$@1 (70)
+    on left: 64, on right: 65
+$@2 (71)
+    on left: 66, on right: 67
+compound_stat (72)
+    on left: 68 69 70 71, on right: 8 9 10 11 59
+selection_stat (73)
+    on left: 73, on right: 60
+$@3 (74)
+    on left: 72, on right: 73
+iteration_stat (75)
+    on left: 77, on right: 61
+$@4 (76)
+    on left: 74, on right: 77
+$@5 (77)
+    on left: 75, on right: 77
+$@6 (78)
+    on left: 76, on right: 77
+jump_stat (79)
+    on left: 78 79 80 81, on right: 62
+exp_stat (80)
+    on left: 82 83, on right: 58 77
+exp (81)
+    on left: 84 85 86, on right: 73 77 80 82 85 134 141
+assignment_exp (82)
+    on left: 87 90, on right: 40 84 85 142 143
+$@7 (83)
+    on left: 88, on right: 90
+$@8 (84)
+    on left: 89, on right: 90
+conditional_exp (85)
+    on left: 91, on right: 87 90 92
+const_exp (86)
+    on left: 92, on right: 26 47 48 65
+logical_or_exp (87)
+    on left: 93 95, on right: 91 95
+$@9 (88)
+    on left: 94, on right: 95
+logical_and_exp (89)
+    on left: 96 98, on right: 93 95 98
+$@10 (90)
+    on left: 97, on right: 98
+inclusive_or_exp (91)
+    on left: 99 101, on right: 96 98 101
+$@11 (92)
+    on left: 100, on right: 101
+exclusive_or_exp (93)
+    on left: 102 104, on right: 99 101 104
+$@12 (94)
+    on left: 103, on right: 104
+and_exp (95)
+    on left: 105 107, on right: 102 104 107
+$@13 (96)
+    on left: 106, on right: 107
+equality_exp (97)
+    on left: 108 110, on right: 105 107 110
+$@14 (98)
+    on left: 109, on right: 110
+relational_exp (99)
+    on left: 111 113 115 117, on right: 108 110 113 115 117
+$@15 (100)
+    on left: 112, on right: 113
+$@16 (101)
+    on left: 114, on right: 115
+$@17 (102)
+    on left: 116, on right: 117
+additive_exp (103)
+    on left: 118 120 122, on right: 111 113 115 117 120 122
+$@18 (104)
+    on left: 119, on right: 120
+$@19 (105)
+    on left: 121, on right: 122
+mult_exp (106)
+    on left: 123 125 127 129, on right: 118 120 122 125 127 129
+$@20 (107)
+    on left: 124, on right: 125
+$@21 (108)
+    on left: 126, on right: 127
+$@22 (109)
+    on left: 128, on right: 129
+unary_exp (110)
+    on left: 130 132, on right: 90 123 125 127 129 132
+$@23 (111)
+    on left: 131, on right: 132
+postfix_exp (112)
+    on left: 133 134 135 136 137, on right: 130 134 135 136 137
+primary_exp (113)
+    on left: 138 139 140 141, on right: 2 133
+argument_exp_list (114)
+    on left: 142 143, on right: 135 143
+consts (115)
+    on left: 144 145 146, on right: 139
+
+
+State 0
+
+    0 $accept: . program_unit $end
+
+    id          shift, and go to state 1
+    type_const  shift, and go to state 2
+    DEFINE      shift, and go to state 3
+    HEADER      shift, and go to state 4
+    '('         shift, and go to state 5
+
+    program_unit         go to state 6
+    translation_unit     go to state 7
+    external_decl        go to state 8
+    function_definition  go to state 9
+    decl                 go to state 10
+    decl_specs           go to state 11
+    type_spec            go to state 12
+    declarator           go to state 13
+    direct_declarator    go to state 14
+
+
+State 1
+
+   24 direct_declarator: id .
+
+    $default  reduce using rule 24 (direct_declarator)
+
+
+State 2
+
+   18 type_spec: type_const .
+
+    $default  reduce using rule 18 (type_spec)
+
+
+State 3
+
+    2 program_unit: DEFINE . primary_exp program_unit
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    '('          shift, and go to state 20
+
+    primary_exp  go to state 21
+    consts       go to state 22
+
+
+State 4
+
+    1 program_unit: HEADER . program_unit
+
+    id          shift, and go to state 1
+    type_const  shift, and go to state 2
+    DEFINE      shift, and go to state 3
+    HEADER      shift, and go to state 4
+    '('         shift, and go to state 5
+
+    program_unit         go to state 23
+    translation_unit     go to state 7
+    external_decl        go to state 8
+    function_definition  go to state 9
+    decl                 go to state 10
+    decl_specs           go to state 11
+    type_spec            go to state 12
+    declarator           go to state 13
+    direct_declarator    go to state 14
+
+
+State 5
+
+   25 direct_declarator: '(' . declarator ')'
+
+    id   shift, and go to state 1
+    '('  shift, and go to state 5
+
+    declarator         go to state 24
+    direct_declarator  go to state 14
+
+
+State 6
+
+    0 $accept: program_unit . $end
+
+    $end  shift, and go to state 25
+
+
+State 7
+
+    3 program_unit: translation_unit .
+    5 translation_unit: translation_unit . external_decl
+
+    id          shift, and go to state 1
+    type_const  shift, and go to state 2
+    '('         shift, and go to state 5
+
+    $default  reduce using rule 3 (program_unit)
+
+    external_decl        go to state 26
+    function_definition  go to state 9
+    decl                 go to state 10
+    decl_specs           go to state 11
+    type_spec            go to state 12
+    declarator           go to state 13
+    direct_declarator    go to state 14
+
+
+State 8
+
+    4 translation_unit: external_decl .
+
+    $default  reduce using rule 4 (translation_unit)
+
+
+State 9
+
+    6 external_decl: function_definition .
+
+    $default  reduce using rule 6 (external_decl)
+
+
+State 10
+
+    7 external_decl: decl .
+
+    $default  reduce using rule 7 (external_decl)
+
+
+State 11
+
+    8 function_definition: decl_specs . declarator decl_list compound_stat
+   10                    | decl_specs . declarator compound_stat
+   12 decl: decl_specs . init_declarator_list ';'
+   13     | decl_specs . ';'
+
+    id   shift, and go to state 1
+    ';'  shift, and go to state 27
+    '('  shift, and go to state 5
+
+    init_declarator_list  go to state 28
+    init_declarator       go to state 29
+    declarator            go to state 30
+    direct_declarator     go to state 14
+
+
+State 12
+
+   16 decl_specs: type_spec . decl_specs
+   17           | type_spec .
+
+    type_const  shift, and go to state 2
+
+    $default  reduce using rule 17 (decl_specs)
+
+    decl_specs  go to state 31
+    type_spec   go to state 12
+
+
+State 13
+
+    9 function_definition: declarator . decl_list compound_stat
+   11                    | declarator . compound_stat
+
+    type_const  shift, and go to state 2
+    '{'         shift, and go to state 32
+
+    decl           go to state 33
+    decl_list      go to state 34
+    decl_specs     go to state 35
+    type_spec      go to state 12
+    compound_stat  go to state 36
+
+
+State 14
+
+   23 declarator: direct_declarator .
+   26 direct_declarator: direct_declarator . '[' const_exp ']'
+   27                  | direct_declarator . '[' ']'
+   28                  | direct_declarator . '(' param_type_list ')'
+   29                  | direct_declarator . '(' id_list ')'
+   30                  | direct_declarator . '(' ')'
+
+    '('  shift, and go to state 37
+    '['  shift, and go to state 38
+
+    $default  reduce using rule 23 (declarator)
+
+
+State 15
+
+  145 consts: char_const .
+
+    $default  reduce using rule 145 (consts)
+
+
+State 16
+
+  138 primary_exp: id .
+
+    $default  reduce using rule 138 (primary_exp)
+
+
+State 17
+
+  140 primary_exp: string .
+
+    $default  reduce using rule 140 (primary_exp)
+
+
+State 18
+
+  144 consts: int_const .
+
+    $default  reduce using rule 144 (consts)
+
+
+State 19
+
+  146 consts: float_const .
+
+    $default  reduce using rule 146 (consts)
+
+
+State 20
+
+  141 primary_exp: '(' . exp ')'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    $default  reduce using rule 86 (exp)
+
+    exp               go to state 40
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 21
+
+    2 program_unit: DEFINE primary_exp . program_unit
+
+    id          shift, and go to state 1
+    type_const  shift, and go to state 2
+    DEFINE      shift, and go to state 3
+    HEADER      shift, and go to state 4
+    '('         shift, and go to state 5
+
+    program_unit         go to state 55
+    translation_unit     go to state 7
+    external_decl        go to state 8
+    function_definition  go to state 9
+    decl                 go to state 10
+    decl_specs           go to state 11
+    type_spec            go to state 12
+    declarator           go to state 13
+    direct_declarator    go to state 14
+
+
+State 22
+
+  139 primary_exp: consts .
+
+    $default  reduce using rule 139 (primary_exp)
+
+
+State 23
+
+    1 program_unit: HEADER program_unit .
+
+    $default  reduce using rule 1 (program_unit)
+
+
+State 24
+
+   25 direct_declarator: '(' declarator . ')'
+
+    ')'  shift, and go to state 56
+
+
+State 25
+
+    0 $accept: program_unit $end .
+
+    $default  accept
+
+
+State 26
+
+    5 translation_unit: translation_unit external_decl .
+
+    $default  reduce using rule 5 (translation_unit)
+
+
+State 27
+
+   13 decl: decl_specs ';' .
+
+    $default  reduce using rule 13 (decl)
+
+
+State 28
+
+   12 decl: decl_specs init_declarator_list . ';'
+   20 init_declarator_list: init_declarator_list . ',' init_declarator
+
+    ';'  shift, and go to state 57
+    ','  shift, and go to state 58
+
+
+State 29
+
+   19 init_declarator_list: init_declarator .
+
+    $default  reduce using rule 19 (init_declarator_list)
+
+
+State 30
+
+    8 function_definition: decl_specs declarator . decl_list compound_stat
+   10                    | decl_specs declarator . compound_stat
+   21 init_declarator: declarator .
+   22                | declarator . '=' initializer
+
+    type_const  shift, and go to state 2
+    '='         shift, and go to state 59
+    '{'         shift, and go to state 32
+
+    $default  reduce using rule 21 (init_declarator)
+
+    decl           go to state 33
+    decl_list      go to state 60
+    decl_specs     go to state 35
+    type_spec      go to state 12
+    compound_stat  go to state 61
+
+
+State 31
+
+   16 decl_specs: type_spec decl_specs .
+
+    $default  reduce using rule 16 (decl_specs)
+
+
+State 32
+
+   68 compound_stat: '{' . decl_list stat_list '}'
+   69              | '{' . stat_list '}'
+   70              | '{' . decl_list '}'
+   71              | '{' . '}'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    type_const   shift, and go to state 2
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '}'          shift, and go to state 71
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    decl              go to state 33
+    decl_list         go to state 72
+    decl_specs        go to state 35
+    type_spec         go to state 12
+    stat_list         go to state 73
+    stat              go to state 74
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 33
+
+   14 decl_list: decl .
+
+    $default  reduce using rule 14 (decl_list)
+
+
+State 34
+
+    9 function_definition: declarator decl_list . compound_stat
+   15 decl_list: decl_list . decl
+
+    type_const  shift, and go to state 2
+    '{'         shift, and go to state 32
+
+    decl           go to state 82
+    decl_specs     go to state 35
+    type_spec      go to state 12
+    compound_stat  go to state 83
+
+
+State 35
+
+   12 decl: decl_specs . init_declarator_list ';'
+   13     | decl_specs . ';'
+
+    id   shift, and go to state 1
+    ';'  shift, and go to state 27
+    '('  shift, and go to state 5
+
+    init_declarator_list  go to state 28
+    init_declarator       go to state 29
+    declarator            go to state 84
+    direct_declarator     go to state 14
+
+
+State 36
+
+   11 function_definition: declarator compound_stat .
+
+    $default  reduce using rule 11 (function_definition)
+
+
+State 37
+
+   28 direct_declarator: direct_declarator '(' . param_type_list ')'
+   29                  | direct_declarator '(' . id_list ')'
+   30                  | direct_declarator '(' . ')'
+
+    id          shift, and go to state 85
+    type_const  shift, and go to state 2
+    ')'         shift, and go to state 86
+
+    decl_specs       go to state 87
+    type_spec        go to state 12
+    param_type_list  go to state 88
+    param_list       go to state 89
+    param_decl       go to state 90
+    id_list          go to state 91
+
+
+State 38
+
+   26 direct_declarator: direct_declarator '[' . const_exp ']'
+   27                  | direct_declarator '[' . ']'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+    ']'          shift, and go to state 92
+
+    conditional_exp   go to state 93
+    const_exp         go to state 94
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 39
+
+  132 unary_exp: inc_const . $@23 unary_exp
+
+    $default  reduce using rule 131 ($@23)
+
+    $@23  go to state 96
+
+
+State 40
+
+   85 exp: exp . ',' assignment_exp
+  141 primary_exp: '(' exp . ')'
+
+    ','  shift, and go to state 97
+    ')'  shift, and go to state 98
+
+
+State 41
+
+   84 exp: assignment_exp .
+
+    $default  reduce using rule 84 (exp)
+
+
+State 42
+
+   87 assignment_exp: conditional_exp .
+
+    $default  reduce using rule 87 (assignment_exp)
+
+
+State 43
+
+   91 conditional_exp: logical_or_exp .
+   95 logical_or_exp: logical_or_exp . or_const $@9 logical_and_exp
+
+    or_const  shift, and go to state 99
+
+    $default  reduce using rule 91 (conditional_exp)
+
+
+State 44
+
+   93 logical_or_exp: logical_and_exp .
+   98 logical_and_exp: logical_and_exp . and_const $@10 inclusive_or_exp
+
+    and_const  shift, and go to state 100
+
+    $default  reduce using rule 93 (logical_or_exp)
+
+
+State 45
+
+   96 logical_and_exp: inclusive_or_exp .
+  101 inclusive_or_exp: inclusive_or_exp . '|' $@11 exclusive_or_exp
+
+    '|'  shift, and go to state 101
+
+    $default  reduce using rule 96 (logical_and_exp)
+
+
+State 46
+
+   99 inclusive_or_exp: exclusive_or_exp .
+  104 exclusive_or_exp: exclusive_or_exp . '^' $@12 and_exp
+
+    '^'  shift, and go to state 102
+
+    $default  reduce using rule 99 (inclusive_or_exp)
+
+
+State 47
+
+  102 exclusive_or_exp: and_exp .
+  107 and_exp: and_exp . '&' $@13 equality_exp
+
+    '&'  shift, and go to state 103
+
+    $default  reduce using rule 102 (exclusive_or_exp)
+
+
+State 48
+
+  105 and_exp: equality_exp .
+  110 equality_exp: equality_exp . eq_const $@14 relational_exp
+
+    eq_const  shift, and go to state 104
+
+    $default  reduce using rule 105 (and_exp)
+
+
+State 49
+
+  108 equality_exp: relational_exp .
+  113 relational_exp: relational_exp . '<' $@15 additive_exp
+  115               | relational_exp . '>' $@16 additive_exp
+  117               | relational_exp . rel_const $@17 additive_exp
+
+    rel_const  shift, and go to state 105
+    '>'        shift, and go to state 106
+    '<'        shift, and go to state 107
+
+    $default  reduce using rule 108 (equality_exp)
+
+
+State 50
+
+  111 relational_exp: additive_exp .
+  120 additive_exp: additive_exp . '+' $@18 mult_exp
+  122             | additive_exp . '-' $@19 mult_exp
+
+    '+'  shift, and go to state 108
+    '-'  shift, and go to state 109
+
+    $default  reduce using rule 111 (relational_exp)
+
+
+State 51
+
+  118 additive_exp: mult_exp .
+  125 mult_exp: mult_exp . '*' $@20 unary_exp
+  127         | mult_exp . '/' $@21 unary_exp
+  129         | mult_exp . '%' $@22 unary_exp
+
+    '*'  shift, and go to state 110
+    '/'  shift, and go to state 111
+    '%'  shift, and go to state 112
+
+    $default  reduce using rule 118 (additive_exp)
+
+
+State 52
+
+   90 assignment_exp: unary_exp . $@7 '=' $@8 conditional_exp
+  123 mult_exp: unary_exp .
+
+    '='       reduce using rule 88 ($@7)
+    $default  reduce using rule 123 (mult_exp)
+
+    $@7  go to state 113
+
+
+State 53
+
+  130 unary_exp: postfix_exp .
+  134 postfix_exp: postfix_exp . '[' exp ']'
+  135            | postfix_exp . '(' argument_exp_list ')'
+  136            | postfix_exp . '(' ')'
+  137            | postfix_exp . inc_const
+
+    inc_const  shift, and go to state 114
+    '('        shift, and go to state 115
+    '['        shift, and go to state 116
+
+    $default  reduce using rule 130 (unary_exp)
+
+
+State 54
+
+  133 postfix_exp: primary_exp .
+
+    $default  reduce using rule 133 (postfix_exp)
+
+
+State 55
+
+    2 program_unit: DEFINE primary_exp program_unit .
+
+    $default  reduce using rule 2 (program_unit)
+
+
+State 56
+
+   25 direct_declarator: '(' declarator ')' .
+
+    $default  reduce using rule 25 (direct_declarator)
+
+
+State 57
+
+   12 decl: decl_specs init_declarator_list ';' .
+
+    $default  reduce using rule 12 (decl)
+
+
+State 58
+
+   20 init_declarator_list: init_declarator_list ',' . init_declarator
+
+    id   shift, and go to state 1
+    '('  shift, and go to state 5
+
+    init_declarator    go to state 117
+    declarator         go to state 84
+    direct_declarator  go to state 14
+
+
+State 59
+
+   22 init_declarator: declarator '=' . initializer
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '{'          shift, and go to state 118
+    '('          shift, and go to state 20
+
+    initializer       go to state 119
+    assignment_exp    go to state 120
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 60
+
+    8 function_definition: decl_specs declarator decl_list . compound_stat
+   15 decl_list: decl_list . decl
+
+    type_const  shift, and go to state 2
+    '{'         shift, and go to state 32
+
+    decl           go to state 82
+    decl_specs     go to state 35
+    type_spec      go to state 12
+    compound_stat  go to state 121
+
+
+State 61
+
+   10 function_definition: decl_specs declarator compound_stat .
+
+    $default  reduce using rule 10 (function_definition)
+
+
+State 62
+
+   63 labeled_stat: id . ':' stat
+  138 primary_exp: id .
+
+    ':'  shift, and go to state 122
+
+    $default  reduce using rule 138 (primary_exp)
+
+
+State 63
+
+   77 iteration_stat: FOR . '(' exp_stat $@4 exp_stat $@5 exp $@6 ')' stat
+
+    '('  shift, and go to state 123
+
+
+State 64
+
+   79 jump_stat: BREAK . ';'
+
+    ';'  shift, and go to state 124
+
+
+State 65
+
+   73 selection_stat: SWITCH . '(' exp ')' $@3 stat
+
+    '('  shift, and go to state 125
+
+
+State 66
+
+   78 jump_stat: CONTINUE . ';'
+
+    ';'  shift, and go to state 126
+
+
+State 67
+
+   80 jump_stat: RETURN . exp ';'
+   81          | RETURN . ';'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 127
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    exp               go to state 128
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 68
+
+   65 labeled_stat: CASE . const_exp ':' $@1 stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    conditional_exp   go to state 93
+    const_exp         go to state 129
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 69
+
+   67 labeled_stat: DEFAULT . ':' $@2 stat
+
+    ':'  shift, and go to state 130
+
+
+State 70
+
+   83 exp_stat: ';' .
+
+    $default  reduce using rule 83 (exp_stat)
+
+
+State 71
+
+   71 compound_stat: '{' '}' .
+
+    $default  reduce using rule 71 (compound_stat)
+
+
+State 72
+
+   15 decl_list: decl_list . decl
+   68 compound_stat: '{' decl_list . stat_list '}'
+   70              | '{' decl_list . '}'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    type_const   shift, and go to state 2
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '}'          shift, and go to state 131
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    decl              go to state 82
+    decl_specs        go to state 35
+    type_spec         go to state 12
+    stat_list         go to state 132
+    stat              go to state 74
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 73
+
+   56 stat_list: stat_list . stat
+   69 compound_stat: '{' stat_list . '}'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '}'          shift, and go to state 133
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 134
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 74
+
+   55 stat_list: stat .
+
+    $default  reduce using rule 55 (stat_list)
+
+
+State 75
+
+   57 stat: labeled_stat .
+
+    $default  reduce using rule 57 (stat)
+
+
+State 76
+
+   59 stat: compound_stat .
+
+    $default  reduce using rule 59 (stat)
+
+
+State 77
+
+   60 stat: selection_stat .
+
+    $default  reduce using rule 60 (stat)
+
+
+State 78
+
+   61 stat: iteration_stat .
+
+    $default  reduce using rule 61 (stat)
+
+
+State 79
+
+   62 stat: jump_stat .
+
+    $default  reduce using rule 62 (stat)
+
+
+State 80
+
+   58 stat: exp_stat .
+
+    $default  reduce using rule 58 (stat)
+
+
+State 81
+
+   82 exp_stat: exp . ';'
+   85 exp: exp . ',' assignment_exp
+
+    ';'  shift, and go to state 135
+    ','  shift, and go to state 97
+
+
+State 82
+
+   15 decl_list: decl_list decl .
+
+    $default  reduce using rule 15 (decl_list)
+
+
+State 83
+
+    9 function_definition: declarator decl_list compound_stat .
+
+    $default  reduce using rule 9 (function_definition)
+
+
+State 84
+
+   21 init_declarator: declarator .
+   22                | declarator . '=' initializer
+
+    '='  shift, and go to state 59
+
+    $default  reduce using rule 21 (init_declarator)
+
+
+State 85
+
+   38 id_list: id .
+
+    $default  reduce using rule 38 (id_list)
+
+
+State 86
+
+   30 direct_declarator: direct_declarator '(' ')' .
+
+    $default  reduce using rule 30 (direct_declarator)
+
+
+State 87
+
+   35 param_decl: decl_specs . declarator
+   36           | decl_specs . abstract_declarator
+   37           | decl_specs .
+
+    id   shift, and go to state 1
+    '('  shift, and go to state 136
+    '['  shift, and go to state 137
+
+    $default  reduce using rule 37 (param_decl)
+
+    declarator                  go to state 138
+    direct_declarator           go to state 14
+    abstract_declarator         go to state 139
+    direct_abstract_declarator  go to state 140
+
+
+State 88
+
+   28 direct_declarator: direct_declarator '(' param_type_list . ')'
+
+    ')'  shift, and go to state 141
+
+
+State 89
+
+   31 param_type_list: param_list .
+   32                | param_list . ',' param_const
+   34 param_list: param_list . ','
+
+    ','  shift, and go to state 142
+
+    $default  reduce using rule 31 (param_type_list)
+
+
+State 90
+
+   33 param_list: param_decl .
+
+    $default  reduce using rule 33 (param_list)
+
+
+State 91
+
+   29 direct_declarator: direct_declarator '(' id_list . ')'
+   39 id_list: id_list . ',' id
+
+    ','  shift, and go to state 143
+    ')'  shift, and go to state 144
+
+
+State 92
+
+   27 direct_declarator: direct_declarator '[' ']' .
+
+    $default  reduce using rule 27 (direct_declarator)
+
+
+State 93
+
+   92 const_exp: conditional_exp .
+
+    $default  reduce using rule 92 (const_exp)
+
+
+State 94
+
+   26 direct_declarator: direct_declarator '[' const_exp . ']'
+
+    ']'  shift, and go to state 145
+
+
+State 95
+
+  123 mult_exp: unary_exp .
+
+    $default  reduce using rule 123 (mult_exp)
+
+
+State 96
+
+  132 unary_exp: inc_const $@23 . unary_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    unary_exp    go to state 146
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 97
+
+   85 exp: exp ',' . assignment_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    assignment_exp    go to state 147
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 98
+
+  141 primary_exp: '(' exp ')' .
+
+    $default  reduce using rule 141 (primary_exp)
+
+
+State 99
+
+   95 logical_or_exp: logical_or_exp or_const . $@9 logical_and_exp
+
+    $default  reduce using rule 94 ($@9)
+
+    $@9  go to state 148
+
+
+State 100
+
+   98 logical_and_exp: logical_and_exp and_const . $@10 inclusive_or_exp
+
+    $default  reduce using rule 97 ($@10)
+
+    $@10  go to state 149
+
+
+State 101
+
+  101 inclusive_or_exp: inclusive_or_exp '|' . $@11 exclusive_or_exp
+
+    $default  reduce using rule 100 ($@11)
+
+    $@11  go to state 150
+
+
+State 102
+
+  104 exclusive_or_exp: exclusive_or_exp '^' . $@12 and_exp
+
+    $default  reduce using rule 103 ($@12)
+
+    $@12  go to state 151
+
+
+State 103
+
+  107 and_exp: and_exp '&' . $@13 equality_exp
+
+    $default  reduce using rule 106 ($@13)
+
+    $@13  go to state 152
+
+
+State 104
+
+  110 equality_exp: equality_exp eq_const . $@14 relational_exp
+
+    $default  reduce using rule 109 ($@14)
+
+    $@14  go to state 153
+
+
+State 105
+
+  117 relational_exp: relational_exp rel_const . $@17 additive_exp
+
+    $default  reduce using rule 116 ($@17)
+
+    $@17  go to state 154
+
+
+State 106
+
+  115 relational_exp: relational_exp '>' . $@16 additive_exp
+
+    $default  reduce using rule 114 ($@16)
+
+    $@16  go to state 155
+
+
+State 107
+
+  113 relational_exp: relational_exp '<' . $@15 additive_exp
+
+    $default  reduce using rule 112 ($@15)
+
+    $@15  go to state 156
+
+
+State 108
+
+  120 additive_exp: additive_exp '+' . $@18 mult_exp
+
+    $default  reduce using rule 119 ($@18)
+
+    $@18  go to state 157
+
+
+State 109
+
+  122 additive_exp: additive_exp '-' . $@19 mult_exp
+
+    $default  reduce using rule 121 ($@19)
+
+    $@19  go to state 158
+
+
+State 110
+
+  125 mult_exp: mult_exp '*' . $@20 unary_exp
+
+    $default  reduce using rule 124 ($@20)
+
+    $@20  go to state 159
+
+
+State 111
+
+  127 mult_exp: mult_exp '/' . $@21 unary_exp
+
+    $default  reduce using rule 126 ($@21)
+
+    $@21  go to state 160
+
+
+State 112
+
+  129 mult_exp: mult_exp '%' . $@22 unary_exp
+
+    $default  reduce using rule 128 ($@22)
+
+    $@22  go to state 161
+
+
+State 113
+
+   90 assignment_exp: unary_exp $@7 . '=' $@8 conditional_exp
+
+    '='  shift, and go to state 162
+
+
+State 114
+
+  137 postfix_exp: postfix_exp inc_const .
+
+    $default  reduce using rule 137 (postfix_exp)
+
+
+State 115
+
+  135 postfix_exp: postfix_exp '(' . argument_exp_list ')'
+  136            | postfix_exp '(' . ')'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+    ')'          shift, and go to state 163
+
+    assignment_exp     go to state 164
+    conditional_exp    go to state 42
+    logical_or_exp     go to state 43
+    logical_and_exp    go to state 44
+    inclusive_or_exp   go to state 45
+    exclusive_or_exp   go to state 46
+    and_exp            go to state 47
+    equality_exp       go to state 48
+    relational_exp     go to state 49
+    additive_exp       go to state 50
+    mult_exp           go to state 51
+    unary_exp          go to state 52
+    postfix_exp        go to state 53
+    primary_exp        go to state 54
+    argument_exp_list  go to state 165
+    consts             go to state 22
+
+
+State 116
+
+  134 postfix_exp: postfix_exp '[' . exp ']'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    $default  reduce using rule 86 (exp)
+
+    exp               go to state 166
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 117
+
+   20 init_declarator_list: init_declarator_list ',' init_declarator .
+
+    $default  reduce using rule 20 (init_declarator_list)
+
+
+State 118
+
+   41 initializer: '{' . initializer_list '}'
+   42            | '{' . initializer_list ',' '}'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '{'          shift, and go to state 118
+    '('          shift, and go to state 20
+
+    initializer       go to state 167
+    initializer_list  go to state 168
+    assignment_exp    go to state 120
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 119
+
+   22 init_declarator: declarator '=' initializer .
+
+    $default  reduce using rule 22 (init_declarator)
+
+
+State 120
+
+   40 initializer: assignment_exp .
+
+    $default  reduce using rule 40 (initializer)
+
+
+State 121
+
+    8 function_definition: decl_specs declarator decl_list compound_stat .
+
+    $default  reduce using rule 8 (function_definition)
+
+
+State 122
+
+   63 labeled_stat: id ':' . stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 169
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 123
+
+   77 iteration_stat: FOR '(' . exp_stat $@4 exp_stat $@5 exp $@6 ')' stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    exp_stat          go to state 170
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 124
+
+   79 jump_stat: BREAK ';' .
+
+    $default  reduce using rule 79 (jump_stat)
+
+
+State 125
+
+   73 selection_stat: SWITCH '(' . exp ')' $@3 stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    $default  reduce using rule 86 (exp)
+
+    exp               go to state 171
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 126
+
+   78 jump_stat: CONTINUE ';' .
+
+    $default  reduce using rule 78 (jump_stat)
+
+
+State 127
+
+   81 jump_stat: RETURN ';' .
+
+    $default  reduce using rule 81 (jump_stat)
+
+
+State 128
+
+   80 jump_stat: RETURN exp . ';'
+   85 exp: exp . ',' assignment_exp
+
+    ';'  shift, and go to state 172
+    ','  shift, and go to state 97
+
+
+State 129
+
+   65 labeled_stat: CASE const_exp . ':' $@1 stat
+
+    ':'  shift, and go to state 173
+
+
+State 130
+
+   67 labeled_stat: DEFAULT ':' . $@2 stat
+
+    $default  reduce using rule 66 ($@2)
+
+    $@2  go to state 174
+
+
+State 131
+
+   70 compound_stat: '{' decl_list '}' .
+
+    $default  reduce using rule 70 (compound_stat)
+
+
+State 132
+
+   56 stat_list: stat_list . stat
+   68 compound_stat: '{' decl_list stat_list . '}'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '}'          shift, and go to state 175
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 134
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 133
+
+   69 compound_stat: '{' stat_list '}' .
+
+    $default  reduce using rule 69 (compound_stat)
+
+
+State 134
+
+   56 stat_list: stat_list stat .
+
+    $default  reduce using rule 56 (stat_list)
+
+
+State 135
+
+   82 exp_stat: exp ';' .
+
+    $default  reduce using rule 82 (exp_stat)
+
+
+State 136
+
+   25 direct_declarator: '(' . declarator ')'
+   46 direct_abstract_declarator: '(' . abstract_declarator ')'
+   52                           | '(' . param_type_list ')'
+   54                           | '(' . ')'
+
+    id          shift, and go to state 1
+    type_const  shift, and go to state 2
+    '('         shift, and go to state 136
+    ')'         shift, and go to state 176
+    '['         shift, and go to state 137
+
+    decl_specs                  go to state 87
+    type_spec                   go to state 12
+    declarator                  go to state 24
+    direct_declarator           go to state 14
+    param_type_list             go to state 177
+    param_list                  go to state 89
+    param_decl                  go to state 90
+    abstract_declarator         go to state 178
+    direct_abstract_declarator  go to state 140
+
+
+State 137
+
+   48 direct_abstract_declarator: '[' . const_exp ']'
+   50                           | '[' . ']'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+    ']'          shift, and go to state 179
+
+    conditional_exp   go to state 93
+    const_exp         go to state 180
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 138
+
+   35 param_decl: decl_specs declarator .
+
+    $default  reduce using rule 35 (param_decl)
+
+
+State 139
+
+   36 param_decl: decl_specs abstract_declarator .
+
+    $default  reduce using rule 36 (param_decl)
+
+
+State 140
+
+   45 abstract_declarator: direct_abstract_declarator .
+   47 direct_abstract_declarator: direct_abstract_declarator . '[' const_exp ']'
+   49                           | direct_abstract_declarator . '[' ']'
+   51                           | direct_abstract_declarator . '(' param_type_list ')'
+   53                           | direct_abstract_declarator . '(' ')'
+
+    '('  shift, and go to state 181
+    '['  shift, and go to state 182
+
+    $default  reduce using rule 45 (abstract_declarator)
+
+
+State 141
+
+   28 direct_declarator: direct_declarator '(' param_type_list ')' .
+
+    $default  reduce using rule 28 (direct_declarator)
+
+
+State 142
+
+   32 param_type_list: param_list ',' . param_const
+   34 param_list: param_list ',' .
+
+    param_const  shift, and go to state 183
+
+    $default  reduce using rule 34 (param_list)
+
+
+State 143
+
+   39 id_list: id_list ',' . id
+
+    id  shift, and go to state 184
+
+
+State 144
+
+   29 direct_declarator: direct_declarator '(' id_list ')' .
+
+    $default  reduce using rule 29 (direct_declarator)
+
+
+State 145
+
+   26 direct_declarator: direct_declarator '[' const_exp ']' .
+
+    $default  reduce using rule 26 (direct_declarator)
+
+
+State 146
+
+  132 unary_exp: inc_const $@23 unary_exp .
+
+    $default  reduce using rule 132 (unary_exp)
+
+
+State 147
+
+   85 exp: exp ',' assignment_exp .
+
+    $default  reduce using rule 85 (exp)
+
+
+State 148
+
+   95 logical_or_exp: logical_or_exp or_const $@9 . logical_and_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    logical_and_exp   go to state 185
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 149
+
+   98 logical_and_exp: logical_and_exp and_const $@10 . inclusive_or_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    inclusive_or_exp  go to state 186
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 150
+
+  101 inclusive_or_exp: inclusive_or_exp '|' $@11 . exclusive_or_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    exclusive_or_exp  go to state 187
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 151
+
+  104 exclusive_or_exp: exclusive_or_exp '^' $@12 . and_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    and_exp         go to state 188
+    equality_exp    go to state 48
+    relational_exp  go to state 49
+    additive_exp    go to state 50
+    mult_exp        go to state 51
+    unary_exp       go to state 95
+    postfix_exp     go to state 53
+    primary_exp     go to state 54
+    consts          go to state 22
+
+
+State 152
+
+  107 and_exp: and_exp '&' $@13 . equality_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    equality_exp    go to state 189
+    relational_exp  go to state 49
+    additive_exp    go to state 50
+    mult_exp        go to state 51
+    unary_exp       go to state 95
+    postfix_exp     go to state 53
+    primary_exp     go to state 54
+    consts          go to state 22
+
+
+State 153
+
+  110 equality_exp: equality_exp eq_const $@14 . relational_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    relational_exp  go to state 190
+    additive_exp    go to state 50
+    mult_exp        go to state 51
+    unary_exp       go to state 95
+    postfix_exp     go to state 53
+    primary_exp     go to state 54
+    consts          go to state 22
+
+
+State 154
+
+  117 relational_exp: relational_exp rel_const $@17 . additive_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    additive_exp  go to state 191
+    mult_exp      go to state 51
+    unary_exp     go to state 95
+    postfix_exp   go to state 53
+    primary_exp   go to state 54
+    consts        go to state 22
+
+
+State 155
+
+  115 relational_exp: relational_exp '>' $@16 . additive_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    additive_exp  go to state 192
+    mult_exp      go to state 51
+    unary_exp     go to state 95
+    postfix_exp   go to state 53
+    primary_exp   go to state 54
+    consts        go to state 22
+
+
+State 156
+
+  113 relational_exp: relational_exp '<' $@15 . additive_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    additive_exp  go to state 193
+    mult_exp      go to state 51
+    unary_exp     go to state 95
+    postfix_exp   go to state 53
+    primary_exp   go to state 54
+    consts        go to state 22
+
+
+State 157
+
+  120 additive_exp: additive_exp '+' $@18 . mult_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    mult_exp     go to state 194
+    unary_exp    go to state 95
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 158
+
+  122 additive_exp: additive_exp '-' $@19 . mult_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    mult_exp     go to state 195
+    unary_exp    go to state 95
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 159
+
+  125 mult_exp: mult_exp '*' $@20 . unary_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    unary_exp    go to state 196
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 160
+
+  127 mult_exp: mult_exp '/' $@21 . unary_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    unary_exp    go to state 197
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 161
+
+  129 mult_exp: mult_exp '%' $@22 . unary_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    unary_exp    go to state 198
+    postfix_exp  go to state 53
+    primary_exp  go to state 54
+    consts       go to state 22
+
+
+State 162
+
+   90 assignment_exp: unary_exp $@7 '=' . $@8 conditional_exp
+
+    $default  reduce using rule 89 ($@8)
+
+    $@8  go to state 199
+
+
+State 163
+
+  136 postfix_exp: postfix_exp '(' ')' .
+
+    $default  reduce using rule 136 (postfix_exp)
+
+
+State 164
+
+  142 argument_exp_list: assignment_exp .
+
+    $default  reduce using rule 142 (argument_exp_list)
+
+
+State 165
+
+  135 postfix_exp: postfix_exp '(' argument_exp_list . ')'
+  143 argument_exp_list: argument_exp_list . ',' assignment_exp
+
+    ','  shift, and go to state 200
+    ')'  shift, and go to state 201
+
+
+State 166
+
+   85 exp: exp . ',' assignment_exp
+  134 postfix_exp: postfix_exp '[' exp . ']'
+
+    ','  shift, and go to state 97
+    ']'  shift, and go to state 202
+
+
+State 167
+
+   43 initializer_list: initializer .
+
+    $default  reduce using rule 43 (initializer_list)
+
+
+State 168
+
+   41 initializer: '{' initializer_list . '}'
+   42            | '{' initializer_list . ',' '}'
+   44 initializer_list: initializer_list . ',' initializer
+
+    '}'  shift, and go to state 203
+    ','  shift, and go to state 204
+
+
+State 169
+
+   63 labeled_stat: id ':' stat .
+
+    $default  reduce using rule 63 (labeled_stat)
+
+
+State 170
+
+   77 iteration_stat: FOR '(' exp_stat . $@4 exp_stat $@5 exp $@6 ')' stat
+
+    $default  reduce using rule 74 ($@4)
+
+    $@4  go to state 205
+
+
+State 171
+
+   73 selection_stat: SWITCH '(' exp . ')' $@3 stat
+   85 exp: exp . ',' assignment_exp
+
+    ','  shift, and go to state 97
+    ')'  shift, and go to state 206
+
+
+State 172
+
+   80 jump_stat: RETURN exp ';' .
+
+    $default  reduce using rule 80 (jump_stat)
+
+
+State 173
+
+   65 labeled_stat: CASE const_exp ':' . $@1 stat
+
+    $default  reduce using rule 64 ($@1)
+
+    $@1  go to state 207
+
+
+State 174
+
+   67 labeled_stat: DEFAULT ':' $@2 . stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 208
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 175
+
+   68 compound_stat: '{' decl_list stat_list '}' .
+
+    $default  reduce using rule 68 (compound_stat)
+
+
+State 176
+
+   54 direct_abstract_declarator: '(' ')' .
+
+    $default  reduce using rule 54 (direct_abstract_declarator)
+
+
+State 177
+
+   52 direct_abstract_declarator: '(' param_type_list . ')'
+
+    ')'  shift, and go to state 209
+
+
+State 178
+
+   46 direct_abstract_declarator: '(' abstract_declarator . ')'
+
+    ')'  shift, and go to state 210
+
+
+State 179
+
+   50 direct_abstract_declarator: '[' ']' .
+
+    $default  reduce using rule 50 (direct_abstract_declarator)
+
+
+State 180
+
+   48 direct_abstract_declarator: '[' const_exp . ']'
+
+    ']'  shift, and go to state 211
+
+
+State 181
+
+   51 direct_abstract_declarator: direct_abstract_declarator '(' . param_type_list ')'
+   53                           | direct_abstract_declarator '(' . ')'
+
+    type_const  shift, and go to state 2
+    ')'         shift, and go to state 212
+
+    decl_specs       go to state 87
+    type_spec        go to state 12
+    param_type_list  go to state 213
+    param_list       go to state 89
+    param_decl       go to state 90
+
+
+State 182
+
+   47 direct_abstract_declarator: direct_abstract_declarator '[' . const_exp ']'
+   49                           | direct_abstract_declarator '[' . ']'
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+    ']'          shift, and go to state 214
+
+    conditional_exp   go to state 93
+    const_exp         go to state 215
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 183
+
+   32 param_type_list: param_list ',' param_const .
+
+    $default  reduce using rule 32 (param_type_list)
+
+
+State 184
+
+   39 id_list: id_list ',' id .
+
+    $default  reduce using rule 39 (id_list)
+
+
+State 185
+
+   95 logical_or_exp: logical_or_exp or_const $@9 logical_and_exp .
+   98 logical_and_exp: logical_and_exp . and_const $@10 inclusive_or_exp
+
+    and_const  shift, and go to state 100
+
+    $default  reduce using rule 95 (logical_or_exp)
+
+
+State 186
+
+   98 logical_and_exp: logical_and_exp and_const $@10 inclusive_or_exp .
+  101 inclusive_or_exp: inclusive_or_exp . '|' $@11 exclusive_or_exp
+
+    '|'  shift, and go to state 101
+
+    $default  reduce using rule 98 (logical_and_exp)
+
+
+State 187
+
+  101 inclusive_or_exp: inclusive_or_exp '|' $@11 exclusive_or_exp .
+  104 exclusive_or_exp: exclusive_or_exp . '^' $@12 and_exp
+
+    '^'  shift, and go to state 102
+
+    $default  reduce using rule 101 (inclusive_or_exp)
+
+
+State 188
+
+  104 exclusive_or_exp: exclusive_or_exp '^' $@12 and_exp .
+  107 and_exp: and_exp . '&' $@13 equality_exp
+
+    '&'  shift, and go to state 103
+
+    $default  reduce using rule 104 (exclusive_or_exp)
+
+
+State 189
+
+  107 and_exp: and_exp '&' $@13 equality_exp .
+  110 equality_exp: equality_exp . eq_const $@14 relational_exp
+
+    eq_const  shift, and go to state 104
+
+    $default  reduce using rule 107 (and_exp)
+
+
+State 190
+
+  110 equality_exp: equality_exp eq_const $@14 relational_exp .
+  113 relational_exp: relational_exp . '<' $@15 additive_exp
+  115               | relational_exp . '>' $@16 additive_exp
+  117               | relational_exp . rel_const $@17 additive_exp
+
+    rel_const  shift, and go to state 105
+    '>'        shift, and go to state 106
+    '<'        shift, and go to state 107
+
+    $default  reduce using rule 110 (equality_exp)
+
+
+State 191
+
+  117 relational_exp: relational_exp rel_const $@17 additive_exp .
+  120 additive_exp: additive_exp . '+' $@18 mult_exp
+  122             | additive_exp . '-' $@19 mult_exp
+
+    '+'  shift, and go to state 108
+    '-'  shift, and go to state 109
+
+    $default  reduce using rule 117 (relational_exp)
+
+
+State 192
+
+  115 relational_exp: relational_exp '>' $@16 additive_exp .
+  120 additive_exp: additive_exp . '+' $@18 mult_exp
+  122             | additive_exp . '-' $@19 mult_exp
+
+    '+'  shift, and go to state 108
+    '-'  shift, and go to state 109
+
+    $default  reduce using rule 115 (relational_exp)
+
+
+State 193
+
+  113 relational_exp: relational_exp '<' $@15 additive_exp .
+  120 additive_exp: additive_exp . '+' $@18 mult_exp
+  122             | additive_exp . '-' $@19 mult_exp
+
+    '+'  shift, and go to state 108
+    '-'  shift, and go to state 109
+
+    $default  reduce using rule 113 (relational_exp)
+
+
+State 194
+
+  120 additive_exp: additive_exp '+' $@18 mult_exp .
+  125 mult_exp: mult_exp . '*' $@20 unary_exp
+  127         | mult_exp . '/' $@21 unary_exp
+  129         | mult_exp . '%' $@22 unary_exp
+
+    '*'  shift, and go to state 110
+    '/'  shift, and go to state 111
+    '%'  shift, and go to state 112
+
+    $default  reduce using rule 120 (additive_exp)
+
+
+State 195
+
+  122 additive_exp: additive_exp '-' $@19 mult_exp .
+  125 mult_exp: mult_exp . '*' $@20 unary_exp
+  127         | mult_exp . '/' $@21 unary_exp
+  129         | mult_exp . '%' $@22 unary_exp
+
+    '*'  shift, and go to state 110
+    '/'  shift, and go to state 111
+    '%'  shift, and go to state 112
+
+    $default  reduce using rule 122 (additive_exp)
+
+
+State 196
+
+  125 mult_exp: mult_exp '*' $@20 unary_exp .
+
+    $default  reduce using rule 125 (mult_exp)
+
+
+State 197
+
+  127 mult_exp: mult_exp '/' $@21 unary_exp .
+
+    $default  reduce using rule 127 (mult_exp)
+
+
+State 198
+
+  129 mult_exp: mult_exp '%' $@22 unary_exp .
+
+    $default  reduce using rule 129 (mult_exp)
+
+
+State 199
+
+   90 assignment_exp: unary_exp $@7 '=' $@8 . conditional_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    conditional_exp   go to state 216
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 95
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 200
+
+  143 argument_exp_list: argument_exp_list ',' . assignment_exp
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    assignment_exp    go to state 217
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 201
+
+  135 postfix_exp: postfix_exp '(' argument_exp_list ')' .
+
+    $default  reduce using rule 135 (postfix_exp)
+
+
+State 202
+
+  134 postfix_exp: postfix_exp '[' exp ']' .
+
+    $default  reduce using rule 134 (postfix_exp)
+
+
+State 203
+
+   41 initializer: '{' initializer_list '}' .
+
+    $default  reduce using rule 41 (initializer)
+
+
+State 204
+
+   42 initializer: '{' initializer_list ',' . '}'
+   44 initializer_list: initializer_list ',' . initializer
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '{'          shift, and go to state 118
+    '}'          shift, and go to state 218
+    '('          shift, and go to state 20
+
+    initializer       go to state 219
+    assignment_exp    go to state 120
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 205
+
+   77 iteration_stat: FOR '(' exp_stat $@4 . exp_stat $@5 exp $@6 ')' stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    exp_stat          go to state 220
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 206
+
+   73 selection_stat: SWITCH '(' exp ')' . $@3 stat
+
+    $default  reduce using rule 72 ($@3)
+
+    $@3  go to state 221
+
+
+State 207
+
+   65 labeled_stat: CASE const_exp ':' $@1 . stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 222
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 208
+
+   67 labeled_stat: DEFAULT ':' $@2 stat .
+
+    $default  reduce using rule 67 (labeled_stat)
+
+
+State 209
+
+   52 direct_abstract_declarator: '(' param_type_list ')' .
+
+    $default  reduce using rule 52 (direct_abstract_declarator)
+
+
+State 210
+
+   46 direct_abstract_declarator: '(' abstract_declarator ')' .
+
+    $default  reduce using rule 46 (direct_abstract_declarator)
+
+
+State 211
+
+   48 direct_abstract_declarator: '[' const_exp ']' .
+
+    $default  reduce using rule 48 (direct_abstract_declarator)
+
+
+State 212
+
+   53 direct_abstract_declarator: direct_abstract_declarator '(' ')' .
+
+    $default  reduce using rule 53 (direct_abstract_declarator)
+
+
+State 213
+
+   51 direct_abstract_declarator: direct_abstract_declarator '(' param_type_list . ')'
+
+    ')'  shift, and go to state 223
+
+
+State 214
+
+   49 direct_abstract_declarator: direct_abstract_declarator '[' ']' .
+
+    $default  reduce using rule 49 (direct_abstract_declarator)
+
+
+State 215
+
+   47 direct_abstract_declarator: direct_abstract_declarator '[' const_exp . ']'
+
+    ']'  shift, and go to state 224
+
+
+State 216
+
+   90 assignment_exp: unary_exp $@7 '=' $@8 conditional_exp .
+
+    $default  reduce using rule 90 (assignment_exp)
+
+
+State 217
+
+  143 argument_exp_list: argument_exp_list ',' assignment_exp .
+
+    $default  reduce using rule 143 (argument_exp_list)
+
+
+State 218
+
+   42 initializer: '{' initializer_list ',' '}' .
+
+    $default  reduce using rule 42 (initializer)
+
+
+State 219
+
+   44 initializer_list: initializer_list ',' initializer .
+
+    $default  reduce using rule 44 (initializer_list)
+
+
+State 220
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat . $@5 exp $@6 ')' stat
+
+    $default  reduce using rule 75 ($@5)
+
+    $@5  go to state 225
+
+
+State 221
+
+   73 selection_stat: SWITCH '(' exp ')' $@3 . stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 226
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 222
+
+   65 labeled_stat: CASE const_exp ':' $@1 stat .
+
+    $default  reduce using rule 65 (labeled_stat)
+
+
+State 223
+
+   51 direct_abstract_declarator: direct_abstract_declarator '(' param_type_list ')' .
+
+    $default  reduce using rule 51 (direct_abstract_declarator)
+
+
+State 224
+
+   47 direct_abstract_declarator: direct_abstract_declarator '[' const_exp ']' .
+
+    $default  reduce using rule 47 (direct_abstract_declarator)
+
+
+State 225
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 . exp $@6 ')' stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 16
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    inc_const    shift, and go to state 39
+    '('          shift, and go to state 20
+
+    $default  reduce using rule 86 (exp)
+
+    exp               go to state 227
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 226
+
+   73 selection_stat: SWITCH '(' exp ')' $@3 stat .
+
+    $default  reduce using rule 73 (selection_stat)
+
+
+State 227
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 exp . $@6 ')' stat
+   85 exp: exp . ',' assignment_exp
+
+    ','  shift, and go to state 97
+
+    $default  reduce using rule 76 ($@6)
+
+    $@6  go to state 228
+
+
+State 228
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 exp $@6 . ')' stat
+
+    ')'  shift, and go to state 229
+
+
+State 229
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 exp $@6 ')' . stat
+
+    char_const   shift, and go to state 15
+    id           shift, and go to state 62
+    string       shift, and go to state 17
+    int_const    shift, and go to state 18
+    float_const  shift, and go to state 19
+    FOR          shift, and go to state 63
+    BREAK        shift, and go to state 64
+    SWITCH       shift, and go to state 65
+    CONTINUE     shift, and go to state 66
+    RETURN       shift, and go to state 67
+    CASE         shift, and go to state 68
+    DEFAULT      shift, and go to state 69
+    inc_const    shift, and go to state 39
+    ';'          shift, and go to state 70
+    '{'          shift, and go to state 32
+    '('          shift, and go to state 20
+
+    ';'       [reduce using rule 86 (exp)]
+    $default  reduce using rule 86 (exp)
+
+    stat              go to state 230
+    labeled_stat      go to state 75
+    compound_stat     go to state 76
+    selection_stat    go to state 77
+    iteration_stat    go to state 78
+    jump_stat         go to state 79
+    exp_stat          go to state 80
+    exp               go to state 81
+    assignment_exp    go to state 41
+    conditional_exp   go to state 42
+    logical_or_exp    go to state 43
+    logical_and_exp   go to state 44
+    inclusive_or_exp  go to state 45
+    exclusive_or_exp  go to state 46
+    and_exp           go to state 47
+    equality_exp      go to state 48
+    relational_exp    go to state 49
+    additive_exp      go to state 50
+    mult_exp          go to state 51
+    unary_exp         go to state 52
+    postfix_exp       go to state 53
+    primary_exp       go to state 54
+    consts            go to state 22
+
+
+State 230
+
+   77 iteration_stat: FOR '(' exp_stat $@4 exp_stat $@5 exp $@6 ')' stat .
+
+    $default  reduce using rule 77 (iteration_stat)
