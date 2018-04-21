@@ -3,6 +3,8 @@
 	#include "symtab.h"
 	#include <string.h> 
 	#include <stdlib.h>
+	#include "for.h"
+	#include "switch.h"
 	int yylex(void);
 	int yyerror(const char *s);
 	int success = 1;
@@ -35,19 +37,10 @@
 	void intermediateCode();
 	void codegen_assign();
 	void codegen_unary();
-	void for_start();
-	void for_rep();
-	void for_end();
-	void for_inc();
-	void switch_start();
-	void switch_case(char* text);
-	void switch_end();
-	void switch_default();
-	void switch_break();
-	void switch_nobreak();
+
+	int is_for_or_switch = 0;
 	int break_found = 0;
-	void for_end_iri();
-	void end_loop();
+	
 	FILE* f1;
 	int i =0;
 
@@ -166,7 +159,7 @@ stat						: labeled_stat
 							| compound_stat
 							| selection_stat
 							| iteration_stat
-							| jump_stat{fprintf(f1,"Jump STatement\n");}
+							| jump_stat
 							;
 labeled_stat				: id ':' stat
 							| CASE const_exp ':' {break_found=0;switch_case($2);}stat{insert(1,$1,"Keyword");}
@@ -182,18 +175,26 @@ compound_stat				: '{' decl_list stat_list '}'
 							| '{' '}'
 							;
 
-selection_stat				: SWITCH '(' exp ')' {switch_start();}stat {insert(1,$1,"Keyword");switch_end();}
-							;
-iteration_stat				: FOR '(' exp_stat {for_start();} exp_stat{for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}
-					
+selection_stat				: SWITCH '(' exp ')' {is_for_or_switch = 2;switch_start();}stat {insert(1,$1,"Keyword");switch_end();}
 							;
 
+iteration_stat				: FOR '(' exp_stat {is_for_or_switch = 1;for_cond_num=0;for_start($3);} exp_stat{if(strlen($3)==1)for_cond_num++;for_rep();}  exp{for_inc();} ')' stat {insert(1,$1,"Keyword");for_end();}		;
+
 jump_stat					: CONTINUE ';'{insert(1,$1,"Keyword");}
-							| BREAK ';'{insert(1,$1,"Keyword");/*end_loop()*/switch_break();break_found=1;}
+							| BREAK ';'{	insert(1,$1,"Keyword");
+									if(is_for_or_switch == 1)
+										end_loop();
+									else
+										switch_break();
+									break_found=1;
+								   }
 							| RETURN exp ';'{insert(1,$1,"Keyword");}
 							| RETURN ';'{insert(1,$1,"Keyword");}
 							;
+
 exp_stat					: exp ';'
+						|';'
+						;
 							;
 exp							: assignment_exp 
 							| exp ',' assignment_exp
@@ -355,37 +356,53 @@ void insert(int type,char* text, char* toktype)
 
 				}
 				 break;
-
-					
-
-
-
 		}
 										
 	}
+
 void end_loop()
 {
 		fprintf(f1,"\tgoto $L%d\n",lnum-2);	
 }
+
+void for_end_iri()
+{
+	int x,y;
+	y=label[ltop--];
+	//x=label[ltop--];
+	fprintf(f1,"\t\tgoto $L%d\n",y);
+	//fprintf(f1,"$L%d: \n",y);
+	top--;
+}
+
 void for_inc()
 {
-	
+		//fprintf(f1,"\nfor_inc() prints:\n");
 		fprintf(f1,"\tgoto $L%d\n",lnum-3);
 		fprintf(f1,"$L%d:\n",lnum-1);
 }
 	
-void for_start()
-	{
+void for_start(char* text)
+{
+		fprintf(f1,"\nfor_start()\ntext = %s\n",text);
+		fprintf(f1,"Len = %d\n",strlen(text));
+		if(strlen(text)==1 && strcmp(text,";")==0){
+			for_cond_num++;
+		}
 		lnum++;
 		label[++ltop]=lnum;
 		fprintf(f1,"$L%d:\n",lnum);
+}
 
-	}
 void for_rep()
-	{
+{
+	//fprintf(f1,"\nfor_rep() prints:\n");
 	lnum++;
- 	fprintf(f1,"if( not %s)",st[top]);
- 	fprintf(f1,"\tgoto $L%d\n",lnum);
+	if(for_cond_num < 2){
+	
+ 		fprintf(f1,"if( not %s)",st[top]);
+ 		fprintf(f1,"\tgoto $L%d\n",lnum);
+	}
  	label[++ltop]=lnum;
  	lnum++;
  	fprintf(f1,"\tgoto $L%d\n",lnum);
@@ -393,10 +410,16 @@ void for_rep()
  	lnum++;
 	label[++ltop]=lnum;
 	fprintf(f1,"$L%d:\n",lnum);
-
-	}
-void for_end()
+	//}
+	/*if(for_cond_num == 2)//if both init and test exp not there
 	{
+		
+	}*/
+}
+
+void for_end()
+{
+	//fprintf(f1,"\nfor_end() prints:\n");
 	int x,y;
 	y=label[ltop--];
 	x=label[ltop-1];
@@ -404,17 +427,8 @@ void for_end()
 	fprintf(f1,"\t\tgoto $L%d\n",y);
 	fprintf(f1,"$L%d: \n",x);
 	ltop--;
-	}
+}
 
-void for_end_iri()
-	{
-	int x,y;
-	y=label[ltop--];
-	//x=label[ltop--];
-	fprintf(f1,"\t\tgoto $L%d\n",y);
-	//fprintf(f1,"$L%d: \n",y);
-	top--;
-	}
 int size(char* text)
 	{
 		if(!strcmp(text,"int"))
