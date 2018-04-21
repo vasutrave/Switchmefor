@@ -12,5 +12,4 @@ Run
                 $ ./build.sh
 
 
-(This parses the input.c file)
-(For now only symbol table done)
+
