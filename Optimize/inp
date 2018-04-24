@@ -1,0 +1,6 @@
+a = 1
+if ( not $t3 ) goto $L2
+goto $L3
+$L4:
+$t0 = a + 1
+end
