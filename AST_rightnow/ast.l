@@ -5,6 +5,12 @@
 	void yyerror(char *);
 %}
 %%
+"int main()"										return MAIN;
+"int"											return INT;
+"float"											return FLOAT;
+"char"											return CHAR;
+
+
 [a-z] 					{
 							yylval.sIndex = *yytext - 'a';
 							return VARIABLE;
@@ -30,7 +36,8 @@
 "for"						return FOR;
 "if" 						return IF;
 "else" 						return ELSE;
-"print" 						return PRINT;
+"printf" 					return PRINT;
+
 [ \t\n]+						 ; /* ignore whitespace */
 . 						yyerror("Unknown character");
 %%

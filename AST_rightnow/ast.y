@@ -7,6 +7,7 @@
 	nodeType *opr(int oper, int nops, ...);
 	nodeType *id(int i);
 	nodeType *con(int value);
+	nodeType *keyword(char* key);
 	void freeNode(nodeType *p);
 	int ex(nodeType *p);
 	int yylex(void);
@@ -19,8 +20,8 @@
 	nodeType *nPtr; /* node pointer */
 };
 %token <iValue> INTEGER
-%token <sIndex> VARIABLE
-%token WHILE IF PRINT FOR
+%token <sIndex> VARIABLE 
+%token WHILE IF PRINT FOR INT FLOAT CHAR MAIN
 %nonassoc IFX
 %nonassoc ELSE
 %left GE LE EQ NE '>' '<'
@@ -31,12 +32,13 @@
 
 %%
 program:
-		function { exit(0); }
+		MAIN function { exit(0); }
 		;
 function:
 		function stmt { ex($2); freeNode($2); }
 		| /* NULL */
 		;
+
 stmt:
 		';' { $$ = opr(';', 2, NULL, NULL); }
 		| expr ';' { $$ = $1; }
@@ -47,7 +49,11 @@ stmt:
 		| IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
 		| IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
 		| '{' stmt_list '}' { $$ = $2; }
+		| INT expr ';' {$$ = opr(INT, 1,$2);}
+		| FLOAT expr ';' {$$ = opr(FLOAT, 1, $2);}
+		| CHAR expr ';' {$$ = opr(CHAR, 1, $2);}
 		;
+
 
 stmt_list:
 		stmt { $$ = $1; }
@@ -71,6 +77,8 @@ expr:
 		| expr EQ expr { $$ = opr(EQ, 2, $1, $3); }
 		| '(' expr ')' { $$ = $2; }
 		;
+
+
 %%
 #define SIZEOF_NODETYPE ((char *)&p->con - (char *)p)
 nodeType *con(int value) {
@@ -91,6 +99,15 @@ nodeType *id(int i) {
 	/* copy information */
 	p->type = typeId;
 	p->id.i = i;
+	return p;
+}
+nodeType *keyword(char* key) {
+	nodeType *p;
+	/* allocate node */
+	if ((p = malloc(sizeof(nodeType))) == NULL)
+	yyerror("out of memory");
+	/* copy information */
+	p->type = typeId;
 	return p;
 }
 nodeType *opr(int oper, int nops, ...) {
