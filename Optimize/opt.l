@@ -12,27 +12,27 @@ char [A-Za-z]
 %}
 
 %%
-{num}+:											{;}
-"goto"											{ECHO;yylval.txt = strdup(yytext);return GOTO;}
-"if"											{ECHO;yylval.txt = strdup(yytext);return IF;}
-"not"											{ECHO;yylval.txt = strdup(yytext);return	NOT;}
-"end"											{ECHO;yylval.txt = strdup(yytext);return	END;}
-("$L"{num}+)									{ECHO;yylval.txt = strdup(yytext);return LABEL;}
-("$t"{num}+)									{printf("$t0");yylval.txt = strdup(yytext);return TEMP;}
-{num}+											{ECHO;yylval.txt = strdup(yytext);return NUM;}
-{char}+											{ECHO;yylval.txt = strdup(yytext);return ID;}
-":"|"\("|"\)"									{ECHO;yylval.txt = strdup(yytext);return yytext[0];}
-"="												{ECHO;yylval.txt = strdup(yytext);return EQ;}
-"!"										{ECHO;yylval.txt = strdup(yytext);return BOOL;}	
-">"|"<"											{ECHO;yylval.txt = strdup(yytext);return yytext[0];}
-"&&"											{ECHO;yylval.txt = strdup(yytext);return AND;}
-"||"											{ECHO;yylval.txt = strdup(yytext);return OR;}
-"!="										{ECHO;yylval.txt = strdup(yytext);return NEQ;}
-"<=" 										{ECHO;yylval.txt = strdup(yytext);return LE;}
-">="										{ECHO;yylval.txt = strdup(yytext);return GE;}
-"*"|"+"|"-"|"/"|"%" 					{ECHO;yylval.txt = strdup(yytext);return yytext[0];}
-					
-[\t|\n|' ']									{ECHO;}
+{num}+:							{;}
+"goto"							{yylval.txt = strdup(yytext);return GOTO;}
+"if"							{yylval.txt = strdup(yytext);return IF;}
+"not"							{yylval.txt = strdup(yytext);return NOT;}
+"end"							{yylval.txt = strdup(yytext);return END;}
+("$L"{num}+)						{yylval.txt = strdup(yytext);return LABEL;}
+("$t"{num}+)						{yylval.txt = strdup(yytext);return TEMP;}
+{num}+							{/*ECHO*/;yylval.txt = strdup(yytext);return NUM;}
+{char}+							{/*ECHO*/;yylval.txt = strdup(yytext);return ID;}
+":"|"\("|"\)"						{/*ECHO;*/yylval.txt = strdup(yytext);return yytext[0];}
+"="							{/*ECHO*/;yylval.txt = strdup(yytext);return EQ;}
+"!"							{/*ECHO*/;yylval.txt = strdup(yytext);return BOOL;}	
+">"|"<"							{/*ECHO*/;yylval.txt = strdup(yytext);return yytext[0];}
+"&&"							{/*ECHO*/;yylval.txt = strdup(yytext);return AND;}
+"||"							{/*ECHO*/;yylval.txt = strdup(yytext);return OR;}
+"!="							{/*ECHO;*/yylval.txt = strdup(yytext);return NEQ;}
+"<=" 							{/*ECHO;*/yylval.txt = strdup(yytext);return LE;}
+">="							{/*ECHO;*/yylval.txt = strdup(yytext);return GE;}
+"*"|"+"|"-"|"/"|"%" 					{/*ECHO*/;yylval.txt = strdup(yytext);return yytext[0];}
+\n							{;}					
+[\t|' ']						{;}
 .												{;}
 %%
 

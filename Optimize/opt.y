@@ -35,39 +35,38 @@ types : label types
 	  | assign types 
 	  | goto types
 	  | if types
-	  |	END 
+	  |	END {printf("end\n");}
 	  ;
-label : LABEL ':' 
+label : LABEL ':' {printf("\n%s :\n",$1);}
 	 ;
 
-assign: oper EQ{isnum = 1;} exp
-	  ;
+assign: oper EQ{printf("%s = ",$1);isnum = 1;} exp{printf("\n");} ;
 
-if 	  : IF '(' NOT exp ')' GOTO LABEL
-	  | IF '(' exp NEQ exp ')' GOTO LABEL
+if 	  : IF '(' NOT{printf("%s ( %s",$1,$3);} exp ')' GOTO LABEL {printf(") goto %s\n",$8);}
+	  | IF '('{printf("%s ( ",$1);} exp NEQ{printf(" %s ",$5);} exp ')' GOTO LABEL {printf(") goto %s\n",$10);}
 	  ;
-goto  : GOTO LABEL
+goto  : GOTO LABEL {printf("goto %s\n",$2);}
 	  ;
 
 exp	  :logical 
-	  |oper '+' oper{if(isnum){result = atoi($1) + atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-	  | oper '-' oper{if(isnum){result = atoi($1) - atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-	  | oper '*' oper{if(isnum){result = atoi($1) * atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-	  | oper '/' oper{if(isnum){result = atoi($1) / atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-	  | oper '%' oper{if(isnum){result = atoi($1) % atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-	  
+	  |oper '+' oper{if(isnum){result = atoi($1) + atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s + %s\n",$1,$3);}
+	  | oper '-' oper{if(isnum){result = atoi($1) - atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s - %s\n",$1,$3);}
+	  | oper '*' oper{if(isnum){result = atoi($1) * atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s * %s\n",$1,$3);}
+	  | oper '/' oper{if(isnum){result = atoi($1) / atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s / %s\n",$1,$3);}
+	  | oper '%' oper{if(isnum){result = atoi($1) % atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s % %s\n",$1,$3);}	  
 	  ;
+
 logical : unary 
-		| oper LE oper{if(isnum){result = atoi($1) <= atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-		| oper GE oper{if(isnum){result = atoi($1) >= atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-		| oper OR oper{if(isnum){result = atoi($1) || atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-		| oper AND oper{if(isnum){result = atoi($1) && atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-		| oper '<' oper{if(isnum){result = atoi($1) < atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
-		| oper '>' oper{if(isnum){result = atoi($1) > atoi($3);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
+		| oper LE oper{if(isnum){result = atoi($1) <= atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  %s  %s\n",$1,$2,$3);}
+		| oper GE oper{if(isnum){result = atoi($1) >= atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  %s  %s\n",$1,$2,$3);}
+		| oper OR oper{if(isnum){result = atoi($1) || atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  %s  %s\n",$1,$2,$3);}
+		| oper AND oper{if(isnum){result = atoi($1) && atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  %s  %s\n",$1,$2,$3);}
+		| oper '<' oper{if(isnum){result = atoi($1) < atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  <  %s\n",$1,$3);}
+		| oper '>' oper{if(isnum){result = atoi($1) > atoi($3);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s  >  %s\n",$1,$3);}
 		;
 
-unary : oper
-	   | BOOL oper {if(isnum){result = !atoi($2);sprintf($$,"%d",result);printf("$$ : %s",$$);}}
+unary : oper{printf(" %s",$1);}
+	   | BOOL oper {if(isnum){result = !atoi($2);sprintf($$,"%d",result);printf("%s",$$);}else printf("%s %s\n",$1,$2);}
 	   ;
 oper : ID{isnum *= 0;}
 	 | NUM{isnum *= 1;}
