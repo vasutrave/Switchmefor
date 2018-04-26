@@ -50,13 +50,16 @@ extern int yydebug;
     WHILE = 260,
     IF = 261,
     PRINT = 262,
-    IFX = 263,
-    ELSE = 264,
-    GE = 265,
-    LE = 266,
-    EQ = 267,
-    NE = 268,
-    UMINUS = 269
+    FOR = 263,
+    IFX = 264,
+    ELSE = 265,
+    GE = 266,
+    LE = 267,
+    EQ = 268,
+    NE = 269,
+    UMINUS = 270,
+    INC = 271,
+    DEC = 272
   };
 #endif
 /* Tokens.  */
@@ -65,13 +68,16 @@ extern int yydebug;
 #define WHILE 260
 #define IF 261
 #define PRINT 262
-#define IFX 263
-#define ELSE 264
-#define GE 265
-#define LE 266
-#define EQ 267
-#define NE 268
-#define UMINUS 269
+#define FOR 263
+#define IFX 264
+#define ELSE 265
+#define GE 266
+#define LE 267
+#define EQ 268
+#define NE 269
+#define UMINUS 270
+#define INC 271
+#define DEC 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -80,11 +86,11 @@ union YYSTYPE
 {
 #line 16 "ast.y" /* yacc.c:1909  */
 
-int iValue; /* integer value */
-char sIndex; /* symbol table index */
-nodeType *nPtr; /* node pointer */
+	int iValue; /* integer value */
+	char sIndex; /* symbol table index */
+	nodeType *nPtr; /* node pointer */
 
-#line 88 "y.tab.h" /* yacc.c:1909  */
+#line 94 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

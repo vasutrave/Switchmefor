@@ -20,11 +20,14 @@
 [-()<>=+*/;{}.] 		{
 						return *yytext;
 						}
+"++"						return INC;
+"--"						return DEC;
 ">=" 						return GE;
 "<=" 						return LE;
 "==" 						return EQ;
 "!=" 						return NE;
-"while" 						return WHILE;
+"while" 					return WHILE;
+"for"						return FOR;
 "if" 						return IF;
 "else" 						return ELSE;
 "print" 						return PRINT;

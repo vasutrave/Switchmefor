@@ -25,9 +25,9 @@ graphFinish();
 return 0;
 }
 void exNode
-( nodeType *p,
-int c, int l, /* start column and line of node */
-int *ce, int *cm /* resulting end column and mid of node */
+( 	nodeType *p,
+	int c, int l, /* start column and line of node */
+	int *ce, int *cm /* resulting end column and mid of node */
 )
 {
 int w, h; /* node width and height */
@@ -47,11 +47,14 @@ case typeId: sprintf (word, "id(%c)", p->id.i + 'A'); break;
 case typeOpr:
 switch(p->opr.oper){
 case WHILE: s = "while"; break;
+case FOR: s = "for"; break;		
 case IF: s = "if"; break;
 case PRINT: s = "print"; break;
 case ';': s = "[;]"; break;
 case '=': s = "[=]"; break;
 case UMINUS: s = "[_]"; break;
+case INC:	s = "[++]";break;
+case DEC:	s = "[--]";break;
 case '+': s = "[+]"; break;
 case '-': s = "[-]"; break;
 case '*': s = "[*]"; break;
@@ -136,29 +139,29 @@ for (j = 0; j <= i; j++) printf ("\n%s", graph[j]);
 printf("\n");
 }
 void graphBox (char *s, int *w, int *h) {
-*w = strlen (s) + del;
-*h = 1;
+	*w = strlen (s) + del;
+	*h = 1;
 }
 void graphDrawBox (char *s, int c, int l) {
-int i;
-graphTest (l, c+strlen(s)-1+del);
-for (i = 0; i < strlen (s); i++) {
-graph[l][c+i+del] = s[i];
-}
+	int i;
+	graphTest (l, c+strlen(s)-1+del);
+	for (i = 0; i < strlen (s); i++) {
+	graph[l][c+i+del] = s[i];
+	}
 }
 void graphDrawArrow (int c1, int l1, int c2, int l2) {
-int m;
-graphTest (l1, c1);
-graphTest (l2, c2);
-m = (l1 + l2) / 2;
-while (l1 != m) {
-graph[l1][c1] = '|'; if (l1 < l2) l1++; else l1--;
-}
-while (c1 != c2) {
-graph[l1][c1] = '-'; if (c1 < c2) c1++; else c1--;
-}
-while (l1 != l2) {
-graph[l1][c1] = '|'; if (l1 < l2) l1++; else l1--;
-}
-graph[l1][c1] = '|';
+	int m;
+	graphTest (l1, c1);
+	graphTest (l2, c2);
+	m = (l1 + l2) / 2;
+	while (l1 != m) {
+	graph[l1][c1] = '|'; if (l1 < l2) l1++; else l1--;
+	}
+	while (c1 != c2) {
+	graph[l1][c1] = '-'; if (c1 < c2) c1++; else c1--;
+	}
+	while (l1 != l2) {
+	graph[l1][c1] = '|'; if (l1 < l2) l1++; else l1--;
+	}
+	graph[l1][c1] = '|';
 }
