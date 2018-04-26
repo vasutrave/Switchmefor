@@ -1,0 +1,910 @@
+Grammar
+
+    0 $accept: stmt $end
+
+    1 stmt: types
+
+    2 types: label types
+    3      | assign types
+    4      | goto types
+    5      | if types
+    6      | END
+
+    7 label: LABEL ':'
+
+    8 $@1: %empty
+
+    9 assign: oper EQ $@1 exp
+
+   10 $@2: %empty
+
+   11 if: IF '(' NOT $@2 exp ')' GOTO LABEL
+
+   12 $@3: %empty
+
+   13 $@4: %empty
+
+   14 if: IF '(' $@3 exp NEQ $@4 exp ')' GOTO LABEL
+
+   15 goto: GOTO LABEL
+
+   16 exp: logical
+
+   17 $@5: %empty
+
+   18 exp: oper $@5 '+' oper
+
+   19 $@6: %empty
+
+   20 exp: oper $@6 '-' oper
+
+   21 $@7: %empty
+
+   22 exp: oper $@7 '*' oper
+
+   23 $@8: %empty
+
+   24 exp: oper $@8 '/' oper
+
+   25 $@9: %empty
+
+   26 exp: oper $@9 '%' oper
+
+   27 logical: unary
+
+   28 $@10: %empty
+
+   29 logical: oper $@10 LE oper
+
+   30 $@11: %empty
+
+   31 logical: oper $@11 GE oper
+
+   32 $@12: %empty
+
+   33 logical: oper $@12 OR oper
+
+   34 $@13: %empty
+
+   35 logical: oper $@13 AND oper
+
+   36 $@14: %empty
+
+   37 logical: oper $@14 '<' oper
+
+   38 $@15: %empty
+
+   39 logical: oper $@15 '>' oper
+
+   40 unary: oper
+   41      | BOOL oper
+
+   42 oper: ID
+   43     | NUM
+   44     | TEMP
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 26
+'(' (40) 11 14
+')' (41) 11 14
+'*' (42) 22
+'+' (43) 18
+'-' (45) 20
+'/' (47) 24
+':' (58) 7
+'<' (60) 37
+'>' (62) 39
+error (256)
+GOTO (258) 11 14 15
+IF (259) 11 14
+NOT (260) 11
+END (261) 6
+LABEL (262) 7 11 14 15
+EQ (263) 9
+AND (264) 35
+OR (265) 33
+LE (266) 29
+GE (267) 31
+BOOL (268) 41
+NEQ (269) 14
+ID (270) 42
+TEMP (271) 44
+NUM (272) 43
+
+
+Nonterminals, with rules where they appear
+
+$accept (28)
+    on left: 0
+stmt (29)
+    on left: 1, on right: 0
+types (30)
+    on left: 2 3 4 5 6, on right: 1 2 3 4 5
+label (31)
+    on left: 7, on right: 2
+assign (32)
+    on left: 9, on right: 3
+$@1 (33)
+    on left: 8, on right: 9
+if (34)
+    on left: 11 14, on right: 5
+$@2 (35)
+    on left: 10, on right: 11
+$@3 (36)
+    on left: 12, on right: 14
+$@4 (37)
+    on left: 13, on right: 14
+goto (38)
+    on left: 15, on right: 4
+exp (39)
+    on left: 16 18 20 22 24 26, on right: 9 11 14
+$@5 (40)
+    on left: 17, on right: 18
+$@6 (41)
+    on left: 19, on right: 20
+$@7 (42)
+    on left: 21, on right: 22
+$@8 (43)
+    on left: 23, on right: 24
+$@9 (44)
+    on left: 25, on right: 26
+logical (45)
+    on left: 27 29 31 33 35 37 39, on right: 16
+$@10 (46)
+    on left: 28, on right: 29
+$@11 (47)
+    on left: 30, on right: 31
+$@12 (48)
+    on left: 32, on right: 33
+$@13 (49)
+    on left: 34, on right: 35
+$@14 (50)
+    on left: 36, on right: 37
+$@15 (51)
+    on left: 38, on right: 39
+unary (52)
+    on left: 40 41, on right: 27
+oper (53)
+    on left: 42 43 44, on right: 9 18 20 22 24 26 29 31 33 35 37 39
+    40 41
+
+
+State 0
+
+    0 $accept: . stmt $end
+
+    GOTO   shift, and go to state 1
+    IF     shift, and go to state 2
+    END    shift, and go to state 3
+    LABEL  shift, and go to state 4
+    ID     shift, and go to state 5
+    TEMP   shift, and go to state 6
+    NUM    shift, and go to state 7
+
+    stmt    go to state 8
+    types   go to state 9
+    label   go to state 10
+    assign  go to state 11
+    if      go to state 12
+    goto    go to state 13
+    oper    go to state 14
+
+
+State 1
+
+   15 goto: GOTO . LABEL
+
+    LABEL  shift, and go to state 15
+
+
+State 2
+
+   11 if: IF . '(' NOT $@2 exp ')' GOTO LABEL
+   14   | IF . '(' $@3 exp NEQ $@4 exp ')' GOTO LABEL
+
+    '('  shift, and go to state 16
+
+
+State 3
+
+    6 types: END .
+
+    $default  reduce using rule 6 (types)
+
+
+State 4
+
+    7 label: LABEL . ':'
+
+    ':'  shift, and go to state 17
+
+
+State 5
+
+   42 oper: ID .
+
+    $default  reduce using rule 42 (oper)
+
+
+State 6
+
+   44 oper: TEMP .
+
+    $default  reduce using rule 44 (oper)
+
+
+State 7
+
+   43 oper: NUM .
+
+    $default  reduce using rule 43 (oper)
+
+
+State 8
+
+    0 $accept: stmt . $end
+
+    $end  shift, and go to state 18
+
+
+State 9
+
+    1 stmt: types .
+
+    $default  reduce using rule 1 (stmt)
+
+
+State 10
+
+    2 types: label . types
+
+    GOTO   shift, and go to state 1
+    IF     shift, and go to state 2
+    END    shift, and go to state 3
+    LABEL  shift, and go to state 4
+    ID     shift, and go to state 5
+    TEMP   shift, and go to state 6
+    NUM    shift, and go to state 7
+
+    types   go to state 19
+    label   go to state 10
+    assign  go to state 11
+    if      go to state 12
+    goto    go to state 13
+    oper    go to state 14
+
+
+State 11
+
+    3 types: assign . types
+
+    GOTO   shift, and go to state 1
+    IF     shift, and go to state 2
+    END    shift, and go to state 3
+    LABEL  shift, and go to state 4
+    ID     shift, and go to state 5
+    TEMP   shift, and go to state 6
+    NUM    shift, and go to state 7
+
+    types   go to state 20
+    label   go to state 10
+    assign  go to state 11
+    if      go to state 12
+    goto    go to state 13
+    oper    go to state 14
+
+
+State 12
+
+    5 types: if . types
+
+    GOTO   shift, and go to state 1
+    IF     shift, and go to state 2
+    END    shift, and go to state 3
+    LABEL  shift, and go to state 4
+    ID     shift, and go to state 5
+    TEMP   shift, and go to state 6
+    NUM    shift, and go to state 7
+
+    types   go to state 21
+    label   go to state 10
+    assign  go to state 11
+    if      go to state 12
+    goto    go to state 13
+    oper    go to state 14
+
+
+State 13
+
+    4 types: goto . types
+
+    GOTO   shift, and go to state 1
+    IF     shift, and go to state 2
+    END    shift, and go to state 3
+    LABEL  shift, and go to state 4
+    ID     shift, and go to state 5
+    TEMP   shift, and go to state 6
+    NUM    shift, and go to state 7
+
+    types   go to state 22
+    label   go to state 10
+    assign  go to state 11
+    if      go to state 12
+    goto    go to state 13
+    oper    go to state 14
+
+
+State 14
+
+    9 assign: oper . EQ $@1 exp
+
+    EQ  shift, and go to state 23
+
+
+State 15
+
+   15 goto: GOTO LABEL .
+
+    $default  reduce using rule 15 (goto)
+
+
+State 16
+
+   11 if: IF '(' . NOT $@2 exp ')' GOTO LABEL
+   14   | IF '(' . $@3 exp NEQ $@4 exp ')' GOTO LABEL
+
+    NOT  shift, and go to state 24
+
+    $default  reduce using rule 12 ($@3)
+
+    $@3  go to state 25
+
+
+State 17
+
+    7 label: LABEL ':' .
+
+    $default  reduce using rule 7 (label)
+
+
+State 18
+
+    0 $accept: stmt $end .
+
+    $default  accept
+
+
+State 19
+
+    2 types: label types .
+
+    $default  reduce using rule 2 (types)
+
+
+State 20
+
+    3 types: assign types .
+
+    $default  reduce using rule 3 (types)
+
+
+State 21
+
+    5 types: if types .
+
+    $default  reduce using rule 5 (types)
+
+
+State 22
+
+    4 types: goto types .
+
+    $default  reduce using rule 4 (types)
+
+
+State 23
+
+    9 assign: oper EQ . $@1 exp
+
+    $default  reduce using rule 8 ($@1)
+
+    $@1  go to state 26
+
+
+State 24
+
+   11 if: IF '(' NOT . $@2 exp ')' GOTO LABEL
+
+    $default  reduce using rule 10 ($@2)
+
+    $@2  go to state 27
+
+
+State 25
+
+   14 if: IF '(' $@3 . exp NEQ $@4 exp ')' GOTO LABEL
+
+    BOOL  shift, and go to state 28
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    exp      go to state 29
+    logical  go to state 30
+    unary    go to state 31
+    oper     go to state 32
+
+
+State 26
+
+    9 assign: oper EQ $@1 . exp
+
+    BOOL  shift, and go to state 28
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    exp      go to state 33
+    logical  go to state 30
+    unary    go to state 31
+    oper     go to state 32
+
+
+State 27
+
+   11 if: IF '(' NOT $@2 . exp ')' GOTO LABEL
+
+    BOOL  shift, and go to state 28
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    exp      go to state 34
+    logical  go to state 30
+    unary    go to state 31
+    oper     go to state 32
+
+
+State 28
+
+   41 unary: BOOL . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 35
+
+
+State 29
+
+   14 if: IF '(' $@3 exp . NEQ $@4 exp ')' GOTO LABEL
+
+    NEQ  shift, and go to state 36
+
+
+State 30
+
+   16 exp: logical .
+
+    $default  reduce using rule 16 (exp)
+
+
+State 31
+
+   27 logical: unary .
+
+    $default  reduce using rule 27 (logical)
+
+
+State 32
+
+   18 exp: oper . $@5 '+' oper
+   20    | oper . $@6 '-' oper
+   22    | oper . $@7 '*' oper
+   24    | oper . $@8 '/' oper
+   26    | oper . $@9 '%' oper
+   29 logical: oper . $@10 LE oper
+   31        | oper . $@11 GE oper
+   33        | oper . $@12 OR oper
+   35        | oper . $@13 AND oper
+   37        | oper . $@14 '<' oper
+   39        | oper . $@15 '>' oper
+   40 unary: oper .
+
+    AND       reduce using rule 34 ($@13)
+    OR        reduce using rule 32 ($@12)
+    LE        reduce using rule 28 ($@10)
+    GE        reduce using rule 30 ($@11)
+    '+'       reduce using rule 17 ($@5)
+    '-'       reduce using rule 19 ($@6)
+    '*'       reduce using rule 21 ($@7)
+    '/'       reduce using rule 23 ($@8)
+    '%'       reduce using rule 25 ($@9)
+    '<'       reduce using rule 36 ($@14)
+    '>'       reduce using rule 38 ($@15)
+    $default  reduce using rule 40 (unary)
+
+    $@5   go to state 37
+    $@6   go to state 38
+    $@7   go to state 39
+    $@8   go to state 40
+    $@9   go to state 41
+    $@10  go to state 42
+    $@11  go to state 43
+    $@12  go to state 44
+    $@13  go to state 45
+    $@14  go to state 46
+    $@15  go to state 47
+
+
+State 33
+
+    9 assign: oper EQ $@1 exp .
+
+    $default  reduce using rule 9 (assign)
+
+
+State 34
+
+   11 if: IF '(' NOT $@2 exp . ')' GOTO LABEL
+
+    ')'  shift, and go to state 48
+
+
+State 35
+
+   41 unary: BOOL oper .
+
+    $default  reduce using rule 41 (unary)
+
+
+State 36
+
+   14 if: IF '(' $@3 exp NEQ . $@4 exp ')' GOTO LABEL
+
+    $default  reduce using rule 13 ($@4)
+
+    $@4  go to state 49
+
+
+State 37
+
+   18 exp: oper $@5 . '+' oper
+
+    '+'  shift, and go to state 50
+
+
+State 38
+
+   20 exp: oper $@6 . '-' oper
+
+    '-'  shift, and go to state 51
+
+
+State 39
+
+   22 exp: oper $@7 . '*' oper
+
+    '*'  shift, and go to state 52
+
+
+State 40
+
+   24 exp: oper $@8 . '/' oper
+
+    '/'  shift, and go to state 53
+
+
+State 41
+
+   26 exp: oper $@9 . '%' oper
+
+    '%'  shift, and go to state 54
+
+
+State 42
+
+   29 logical: oper $@10 . LE oper
+
+    LE  shift, and go to state 55
+
+
+State 43
+
+   31 logical: oper $@11 . GE oper
+
+    GE  shift, and go to state 56
+
+
+State 44
+
+   33 logical: oper $@12 . OR oper
+
+    OR  shift, and go to state 57
+
+
+State 45
+
+   35 logical: oper $@13 . AND oper
+
+    AND  shift, and go to state 58
+
+
+State 46
+
+   37 logical: oper $@14 . '<' oper
+
+    '<'  shift, and go to state 59
+
+
+State 47
+
+   39 logical: oper $@15 . '>' oper
+
+    '>'  shift, and go to state 60
+
+
+State 48
+
+   11 if: IF '(' NOT $@2 exp ')' . GOTO LABEL
+
+    GOTO  shift, and go to state 61
+
+
+State 49
+
+   14 if: IF '(' $@3 exp NEQ $@4 . exp ')' GOTO LABEL
+
+    BOOL  shift, and go to state 28
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    exp      go to state 62
+    logical  go to state 30
+    unary    go to state 31
+    oper     go to state 32
+
+
+State 50
+
+   18 exp: oper $@5 '+' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 63
+
+
+State 51
+
+   20 exp: oper $@6 '-' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 64
+
+
+State 52
+
+   22 exp: oper $@7 '*' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 65
+
+
+State 53
+
+   24 exp: oper $@8 '/' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 66
+
+
+State 54
+
+   26 exp: oper $@9 '%' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 67
+
+
+State 55
+
+   29 logical: oper $@10 LE . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 68
+
+
+State 56
+
+   31 logical: oper $@11 GE . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 69
+
+
+State 57
+
+   33 logical: oper $@12 OR . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 70
+
+
+State 58
+
+   35 logical: oper $@13 AND . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 71
+
+
+State 59
+
+   37 logical: oper $@14 '<' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 72
+
+
+State 60
+
+   39 logical: oper $@15 '>' . oper
+
+    ID    shift, and go to state 5
+    TEMP  shift, and go to state 6
+    NUM   shift, and go to state 7
+
+    oper  go to state 73
+
+
+State 61
+
+   11 if: IF '(' NOT $@2 exp ')' GOTO . LABEL
+
+    LABEL  shift, and go to state 74
+
+
+State 62
+
+   14 if: IF '(' $@3 exp NEQ $@4 exp . ')' GOTO LABEL
+
+    ')'  shift, and go to state 75
+
+
+State 63
+
+   18 exp: oper $@5 '+' oper .
+
+    $default  reduce using rule 18 (exp)
+
+
+State 64
+
+   20 exp: oper $@6 '-' oper .
+
+    $default  reduce using rule 20 (exp)
+
+
+State 65
+
+   22 exp: oper $@7 '*' oper .
+
+    $default  reduce using rule 22 (exp)
+
+
+State 66
+
+   24 exp: oper $@8 '/' oper .
+
+    $default  reduce using rule 24 (exp)
+
+
+State 67
+
+   26 exp: oper $@9 '%' oper .
+
+    $default  reduce using rule 26 (exp)
+
+
+State 68
+
+   29 logical: oper $@10 LE oper .
+
+    $default  reduce using rule 29 (logical)
+
+
+State 69
+
+   31 logical: oper $@11 GE oper .
+
+    $default  reduce using rule 31 (logical)
+
+
+State 70
+
+   33 logical: oper $@12 OR oper .
+
+    $default  reduce using rule 33 (logical)
+
+
+State 71
+
+   35 logical: oper $@13 AND oper .
+
+    $default  reduce using rule 35 (logical)
+
+
+State 72
+
+   37 logical: oper $@14 '<' oper .
+
+    $default  reduce using rule 37 (logical)
+
+
+State 73
+
+   39 logical: oper $@15 '>' oper .
+
+    $default  reduce using rule 39 (logical)
+
+
+State 74
+
+   11 if: IF '(' NOT $@2 exp ')' GOTO LABEL .
+
+    $default  reduce using rule 11 (if)
+
+
+State 75
+
+   14 if: IF '(' $@3 exp NEQ $@4 exp ')' . GOTO LABEL
+
+    GOTO  shift, and go to state 76
+
+
+State 76
+
+   14 if: IF '(' $@3 exp NEQ $@4 exp ')' GOTO . LABEL
+
+    LABEL  shift, and go to state 77
+
+
+State 77
+
+   14 if: IF '(' $@3 exp NEQ $@4 exp ')' GOTO LABEL .
+
+    $default  reduce using rule 14 (if)

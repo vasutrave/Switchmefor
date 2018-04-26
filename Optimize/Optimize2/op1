@@ -1,0 +1,81 @@
+a =  1
+b = 3
+c = 5
+x = a + b
+y = c + 2
+
+b = a
+a = 0
+c = a
+$L1 :
+goto $L3
+
+$L4 :
+$t0 = 4
+j =  $t0
+goto $L1
+
+$L3 :
+$t1 = j + 1
+
+m =  $t1
+a =  0
+
+$L5 :
+$t2 = a  <  10
+
+if ( not $t2) goto $L6
+goto $L7
+
+$L8 :
+$t3 = a + 1
+
+a =  $t3
+goto $L5
+
+$L7 :
+$t4 = b + 1
+
+b =  $t4
+goto $L8
+
+$L6 :
+goto $L4
+
+$L2 :
+c =  0
+$t5 = a + 1
+
+
+$L10 :
+if (  a !=  1) goto $L11
+$t6 = 6
+b =  $t6
+goto $L9
+
+$L11 :
+if (  a !=  2) goto $L12
+$t7 = a + 2
+
+b =  $t7
+goto $L9
+
+$L12 :
+if (  a !=  3) goto $L13
+$t8 = a + 5
+
+c =  $t8
+
+$L13 :
+$t9 = 2
+c =  $t9
+$t10 = a + 5
+
+b =  $t10
+
+$L14 :
+
+$L9 :
+D =  0
+end
+
